@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -6,4 +5,71 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userProfile UserProfile?
+  foundedItem FoundItem[]
+  claim       Claim[]
+}
+
+model UserProfile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  bio       String
+  age       Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id])
+}
+
+model FoundItemCategory {
+  id          String      @id @default(uuid())
+  name        String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  foundedItem FoundItem[]
+}
+
+model FoundItem {
+  id            String   @id @default(uuid())
+  userId        String
+  categoryId    String
+  foundItemName String
+  description   String
+  location      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user     User              @relation(fields: [userId], references: [id])
+  category FoundItemCategory @relation(fields: [categoryId], references: [id])
+  claim    Claim[]
+}
+
+model Claim {
+  id                     String      @id @default(uuid())
+  userId                 String
+  foundItemId            String
+  status                 ClaimStatus
+  distinguishingFeatures String
+  lostDate               DateTime
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+
+  user      User      @relation(fields: [userId], references: [id])
+  foundItem FoundItem @relation(fields: [foundItemId], references: [id])
+}
+
+enum ClaimStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
