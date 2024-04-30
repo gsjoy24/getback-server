@@ -1,6 +1,6 @@
-import { User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import config from '../../config';
+import createToken from '../../utils/createToken';
 import prisma from '../../utils/prisma';
 
 const createUser = async (userData: any) => {
@@ -9,7 +9,6 @@ const createUser = async (userData: any) => {
 
 	const modifiedUserData = { ...restUserData, password: hashedPassword };
 
-	console.log({ modifiedUserData, profile });
 	const newUser = await prisma.$transaction(async (trx) => {
 		const user = await trx.user.create({
 			data: modifiedUserData,
@@ -32,8 +31,33 @@ const createUser = async (userData: any) => {
 	return newUser;
 };
 
+const loginUser = async (email: string, password: string) => {
+	const user = await prisma.user.findUniqueOrThrow({
+		where: {
+			email
+		}
+	});
+
+	const isPasswordMatch = await bcrypt.compare(password, user.password);
+	if (!isPasswordMatch) {
+		throw new Error('Invalid password');
+	}
+	const userData = {
+		id: user.id,
+		email: user.email
+	};
+	const token = createToken(userData, config.accessSecret, config.accessSecretExp);
+
+	return {
+		name: user.name,
+		...userData,
+		token
+	};
+};
+
 const UserServices = {
-	createUser
+	createUser,
+	loginUser
 };
 
 export default UserServices;
