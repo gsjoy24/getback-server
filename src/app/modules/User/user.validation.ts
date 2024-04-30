@@ -3,16 +3,24 @@ import { z } from 'zod';
 const createUser = z.object({
 	body: z.object({
 		name: z
-			.string()
+			.string({
+				required_error: 'Name is required!'
+			})
 			.min(3, {
 				message: 'Name must be at least 3 characters!'
 			})
 			.max(255),
-		email: z.string().email({
-			message: 'Invalid email address!'
-		}),
+		email: z
+			.string({
+				required_error: 'Email is required!'
+			})
+			.email({
+				message: 'Invalid email address!'
+			}),
 		password: z
-			.string()
+			.string({
+				required_error: 'Password is required!'
+			})
 			.min(6, {
 				message: 'Password must be at least 6 characters!'
 			})
@@ -29,7 +37,8 @@ const createUser = z.object({
 					.max(255),
 				age: z
 					.number({
-						message: 'Age must be a number!'
+						required_error: 'Age is required!',
+						invalid_type_error: 'Age must be a number!'
 					})
 					.int({
 						message: 'Age must be an integer!'
