@@ -11,7 +11,9 @@ const auth = () => async (req: Request, res: Response, next: NextFunction) => {
 		}
 		const verifiedUser = verifyToken(token, config.accessSecret);
 
-		await prisma.user.findUniqueOrThrow({ where: { email: verifiedUser.email } });
+		const user = await prisma.user.findUniqueOrThrow({ where: { email: verifiedUser.email } });
+
+		req.user = user;
 
 		next();
 	} catch (error) {
