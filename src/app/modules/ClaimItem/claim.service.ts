@@ -19,8 +19,22 @@ const claimItem = async (claimItem: Claim, userData: User) => {
 	return newClaimItem;
 };
 
-const claimServices = {
-	claimItem
+const getClaims = async () => {
+	const claims = await prisma.claim.findMany({
+		include: {
+			foundItem: {
+				include: {
+					user: true,
+					category: true
+				}
+			}
+		}
+	});
+	return claims;
 };
 
+const claimServices = {
+	claimItem,
+	getClaims
+};
 export default claimServices;

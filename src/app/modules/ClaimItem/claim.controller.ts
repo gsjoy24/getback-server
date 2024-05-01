@@ -16,8 +16,20 @@ const claimItem = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const getClaims = catchAsync(async (req: Request, res: Response) => {
+	const claims = await claimServices.getClaims();
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Claims retrieved successfully',
+		data: claims
+	});
+});
+
 const ClaimControllers = {
-	claimItem
+	claimItem,
+	getClaims
 };
 
 export default ClaimControllers;
