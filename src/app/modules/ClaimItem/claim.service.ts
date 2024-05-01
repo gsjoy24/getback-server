@@ -1,4 +1,4 @@
-import { Claim, User } from '@prisma/client';
+import { Claim, ClaimStatus, User } from '@prisma/client';
 import prisma from '../../utils/prisma';
 
 const claimItem = async (claimItem: Claim, userData: User) => {
@@ -33,8 +33,29 @@ const getClaims = async () => {
 	return claims;
 };
 
+const UpdateStatus = async (claimId: string, status: ClaimStatus) => {
+	await prisma.claim.findUniqueOrThrow({
+		where: {
+			id: claimId
+		}
+	});
+
+	const claim = await prisma.claim.update({
+		where: {
+			id: claimId
+		},
+		data: {
+			status
+		}
+	});
+
+	return claim;
+};
+
 const claimServices = {
 	claimItem,
-	getClaims
+	getClaims,
+	UpdateStatus
 };
+
 export default claimServices;

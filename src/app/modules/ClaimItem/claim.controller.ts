@@ -27,9 +27,23 @@ const getClaims = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const updateStatus = catchAsync(async (req: Request, res: Response) => {
+	const { claimId } = req.params;
+	const { status } = req.body;
+	const updatedClaim = await claimServices.UpdateStatus(claimId, status);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Claim status updated successfully',
+		data: updatedClaim
+	});
+});
+
 const ClaimControllers = {
 	claimItem,
-	getClaims
+	getClaims,
+	updateStatus
 };
 
 export default ClaimControllers;

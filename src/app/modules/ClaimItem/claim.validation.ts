@@ -14,8 +14,17 @@ const createClaimSchema = z.object({
 	})
 });
 
+const updateClaimSchema = z.object({
+	body: z.object({
+		status: z.enum(['PENDING', 'APPROVED', 'REJECTED'], {
+			required_error: 'Status is required',
+			invalid_type_error: 'Status must be one of PENDING, APPROVED or REJECTED'
+		})
+	})
+});
 const ClaimValidations = {
-	createClaimSchema
+	createClaimSchema,
+	updateClaimSchema
 };
 
 export default ClaimValidations;
