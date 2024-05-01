@@ -75,10 +75,32 @@ const getUserProfile = async (userId: string) => {
 	return userProfile;
 };
 
+const updateUserProfile = async (userId: string, profileData: any) => {
+	const userProfile = await prisma.userProfile.update({
+		where: {
+			userId
+		},
+		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					createdAt: true,
+					updatedAt: true
+				}
+			}
+		},
+		data: profileData
+	});
+	return userProfile;
+};
+
 const UserServices = {
 	createUser,
 	loginUser,
-	getUserProfile
+	getUserProfile,
+	updateUserProfile
 };
 
 export default UserServices;

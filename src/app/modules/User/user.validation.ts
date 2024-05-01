@@ -29,12 +29,10 @@ const createUser = z.object({
 			}),
 		profile: z.object(
 			{
-				bio: z
-					.string({
-						required_error: 'Bio is required!',
-						invalid_type_error: 'Bio must be a string!'
-					})
-					.max(255),
+				bio: z.string({
+					required_error: 'Bio is required!',
+					invalid_type_error: 'Bio must be a string!'
+				}),
 				age: z
 					.number({
 						required_error: 'Age is required!',
@@ -69,9 +67,29 @@ const loginUser = z.object({
 	})
 });
 
+const updateUserProfile = z.object({
+	body: z.object({
+		bio: z.string({
+			required_error: 'Bio is required!',
+			invalid_type_error: 'Bio must be a string!'
+		}),
+		age: z
+			.number({
+				required_error: 'Age is required!',
+				invalid_type_error: 'Age must be a number!'
+			})
+			.int({
+				message: 'Age must be an integer!'
+			})
+			.positive({
+				message: 'Age must be a positive number!'
+			})
+	})
+});
 const userValidationSchemas = {
 	createUser,
-	loginUser
+	loginUser,
+	updateUserProfile
 };
 
 export default userValidationSchemas;

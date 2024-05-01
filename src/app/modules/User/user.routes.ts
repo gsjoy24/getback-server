@@ -11,4 +11,11 @@ router.post('/register', validateRequest(userValidationSchemas.createUser), User
 
 router.post('/login', validateRequest(userValidationSchemas.loginUser), UserControllers.loginUser);
 
+router.put(
+	'/my-profile',
+	auth(),
+	validateRequest(userValidationSchemas.updateUserProfile),
+	UserControllers.updateUserProfile
+);
+
 export const userRoutes = router;
