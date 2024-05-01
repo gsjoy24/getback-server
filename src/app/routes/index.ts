@@ -1,7 +1,7 @@
 import express from 'express';
 import CategoryRoutes from '../modules/Category/category.routes';
 import ClaimRoutes from '../modules/ClaimItem/claim.routes';
-import ReportItemRoutes from '../modules/ReportItem/reportItem.routes';
+import ReportItemRoutes from '../modules/FoundItem/foundItem.routes';
 import { userRoutes } from '../modules/User/user.routes';
 const router = express.Router();
 

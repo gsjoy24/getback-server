@@ -7,3 +7,10 @@ declare global {
 		}
 	}
 }
+
+export type QueryOptions = {
+	limit?: number;
+	page?: number;
+	sortBy?: string;
+	sortOrder?: string;
+};

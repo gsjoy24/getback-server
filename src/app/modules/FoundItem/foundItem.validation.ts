@@ -1,7 +1,6 @@
-
 import { z } from 'zod';
 
-const createReportItem = z.object({
+const ReportFoundItem = z.object({
 	body: z.object({
 		categoryId: z.string({
 			required_error: 'Category id is required'
@@ -27,7 +26,7 @@ const createReportItem = z.object({
 });
 
 const ReportItemValidations = {
-   createReportItem
+	ReportFoundItem
 };
 
 export default ReportItemValidations;
