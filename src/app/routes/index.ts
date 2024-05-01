@@ -1,5 +1,6 @@
 import express from 'express';
 import CategoryRoutes from '../modules/Category/category.routes';
+import ClaimRoutes from '../modules/ClaimItem/claim.routes';
 import ReportItemRoutes from '../modules/ReportItem/reportItem.routes';
 import { userRoutes } from '../modules/User/user.routes';
 const router = express.Router();
@@ -16,6 +17,10 @@ const moduleRoutes = [
 	{
 		path: '/',
 		route: ReportItemRoutes
+	},
+	{
+		path: '/',
+		route: ClaimRoutes
 	}
 ];
 
