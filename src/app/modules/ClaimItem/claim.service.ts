@@ -24,7 +24,15 @@ const getClaims = async () => {
 		include: {
 			foundItem: {
 				include: {
-					user: true,
+					user: {
+						select: {
+							id: true,
+							name: true,
+							email: true,
+							createdAt: true,
+							updatedAt: true
+						}
+					},
 					category: true
 				}
 			}

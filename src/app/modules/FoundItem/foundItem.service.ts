@@ -4,8 +4,6 @@ import prisma from '../../utils/prisma';
 import { foundItemSearchableFields } from './foundItem.constant';
 
 const ReportFoundItem = async (reportItem: FoundItem, userData: User) => {
-	// Omit the password from the user data
-	const { password, ...restUserData } = userData;
 	// check if the category exists
 	await prisma.foundItemCategory.findUniqueOrThrow({
 		where: {
@@ -19,14 +17,20 @@ const ReportFoundItem = async (reportItem: FoundItem, userData: User) => {
 			userId: userData.id
 		},
 		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					createdAt: true,
+					updatedAt: true
+				}
+			},
 			category: true
 		}
 	});
 
-	return {
-		...newReportItem,
-		user: restUserData
-	};
+	return newReportItem;
 };
 
 const getFoundItems = async (query: any, options: QueryOptions) => {
