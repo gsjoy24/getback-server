@@ -64,7 +64,9 @@ const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, functio
         email: user.email
     };
     const token = (0, createToken_1.default)(userData, config_1.default.accessSecret, config_1.default.accessSecretExp);
-    return Object.assign(Object.assign({ name: user.name }, userData), { token });
+    const refreshToken = (0, createToken_1.default)(userData, config_1.default.refreshSecret, config_1.default.refreshSecretExp);
+    return Object.assign(Object.assign({ name: user.name }, userData), { token,
+        refreshToken });
 });
 const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const userProfile = yield prisma_1.default.userProfile.findUniqueOrThrow({

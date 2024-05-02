@@ -47,13 +47,13 @@ const loginUser = async (email: string, password: string) => {
 		id: user.id,
 		email: user.email
 	};
-	const accessToken = createToken(userData, config.accessSecret, config.accessSecretExp);
+	const token = createToken(userData, config.accessSecret, config.accessSecretExp);
 	const refreshToken = createToken(userData, config.refreshSecret, config.refreshSecretExp);
 
 	return {
 		name: user.name,
 		...userData,
-		accessToken,
+		token,
 		refreshToken
 	};
 };
