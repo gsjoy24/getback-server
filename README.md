@@ -6,7 +6,7 @@
 - 3️⃣ Add the code bellow in the .env file
 
 ```
-<!-- you can use your database -->
+# you can use your database
 DATABASE_URL="postgres://postgres.hdfpkfazkuyxdfaccdav:XM%3F7~Yv%26GQ(t%26b%3F@aws-0-us-west-1.pooler.supabase.com:5432/postgres"
 PORT=3000
 JWT_ACCESS_SECRET=afhukdayfuiyhvgdcfiasbfdu
