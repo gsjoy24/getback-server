@@ -1,6 +1,7 @@
+import { FoundItemCategory } from '@prisma/client';
 import prisma from '../../utils/prisma';
 
-const createCategory = async (categoryData: any) => {
+const createCategory = async (categoryData: FoundItemCategory) => {
 	const isExist = await prisma.foundItemCategory.findUnique({
 		where: {
 			name: categoryData.name

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import { ZodIssue } from 'zod';
 const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
 	const modifiedError: any = {
 		status: false,
@@ -7,7 +8,7 @@ const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFun
 	};
 
 	if (err?.name === 'ZodError') {
-		modifiedError.message = err?.issues?.map((issue: any) => issue.message).join(', ');
+		modifiedError.message = err?.issues?.map((issue: ZodIssue) => issue.message).join(', ');
 	}
 
 	res.status(err?.statusCode || 500).json(modifiedError);

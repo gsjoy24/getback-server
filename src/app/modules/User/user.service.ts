@@ -1,9 +1,10 @@
+import { User, UserProfile } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 import createToken from '../../utils/createToken';
 import prisma from '../../utils/prisma';
 
-const createUser = async (userData: any) => {
+const createUser = async (userData: User & { profile: UserProfile }) => {
 	const { password, profile, ...restUserData } = userData;
 	const hashedPassword = await bcrypt.hash(password, config.pass_salt);
 
@@ -75,7 +76,7 @@ const getUserProfile = async (userId: string) => {
 	return userProfile;
 };
 
-const updateUserProfile = async (userId: string, profileData: any) => {
+const updateUserProfile = async (userId: string, profileData: UserProfile) => {
 	const userProfile = await prisma.userProfile.update({
 		where: {
 			userId

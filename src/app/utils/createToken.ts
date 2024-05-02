@@ -1,5 +1,6 @@
+import { User } from '@prisma/client';
 import jwt from 'jsonwebtoken';
-const createToken = (data: any, secret: string, expiresIn: string) => {
+const createToken = (data: Partial<User>, secret: string, expiresIn: string) => {
 	const token = jwt.sign(data, secret, {
 		expiresIn,
 		algorithm: 'HS256'
