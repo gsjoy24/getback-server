@@ -11,5 +11,8 @@ export default {
 	accessSecret: process.env.JWT_ACCESS_SECRET as string,
 	refreshSecret: process.env.JWT_REFRESH_SECRET as string,
 	accessSecretExp: process.env.JWT_ACCESS_SECRET_EXPIRATION as string,
-	refreshSecretExp: process.env.JWT_REFRESH_EXPIRATION as string
+	refreshSecretExp: process.env.JWT_REFRESH_EXPIRATION as string,
+
+	adminEmail: process.env.ADMIN_EMAIL,
+	adminPass: process.env.ADMIN_PASSWORD
 };

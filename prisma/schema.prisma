@@ -8,11 +8,10 @@ datasource db {
 }
 
 model User {
-  id       String   @id @default(uuid())
+  id       String @id @default(uuid())
   name     String
-  email    String   @unique
+  email    String @unique
   password String
-  role     UserRole
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -20,6 +19,16 @@ model User {
   userProfile UserProfile?
   foundedItem FoundItem[]
   claim       Claim[]
+}
+
+model Admin {
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model UserProfile {
@@ -74,9 +83,4 @@ enum ClaimStatus {
   PENDING
   APPROVED
   REJECTED
-}
-
-enum UserRole {
-  ADMIN
-  USER
 }
