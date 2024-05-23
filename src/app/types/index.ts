@@ -1,5 +1,10 @@
 import { User } from '@prisma/client';
 
+const TUserRole = {
+	ADMIN: 'ADMIN',
+	USER: 'USER'
+};
+
 declare global {
 	namespace Express {
 		interface Request {

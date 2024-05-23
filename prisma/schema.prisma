@@ -8,10 +8,12 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
+  id       String   @id @default(uuid())
+  name     String
+  email    String   @unique
+  password String
+  role     UserRole
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -72,4 +74,9 @@ enum ClaimStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum UserRole {
+  ADMIN
+  USER
 }
