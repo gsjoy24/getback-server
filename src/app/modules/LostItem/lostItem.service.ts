@@ -75,9 +75,7 @@ const getLostItems = async (query: any, options: QueryOptions) => {
 				select: {
 					id: true,
 					name: true,
-					email: true,
-					createdAt: true,
-					updatedAt: true
+					email: true
 				}
 			},
 			category: true

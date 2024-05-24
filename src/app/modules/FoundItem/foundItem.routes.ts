@@ -16,5 +16,5 @@ router.post(
 
 router.get('/found-items', FoundItemControllers.getFoundItems);
 
-const ReportItemRoutes = router;
-export default ReportItemRoutes;
+const FoundItemRoutes = router;
+export default FoundItemRoutes;

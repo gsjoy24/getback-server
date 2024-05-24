@@ -22,18 +22,20 @@ const ReportLostItem = catchAsync(async (req: Request, res: Response) => {
 const GetLostItems = catchAsync(async (req: Request, res: Response) => {
 	const query = pick(req.query, lostItemFilterAbleFields);
 	const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-	const { meta, lostItems  = await LostItemServices.getLostItems(query, options);
+	const { meta, lostItems } = await LostItemServices.getLostItems(query, options);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
 		success: true,
-    message: 'Lost items fetched successfully',
-    meta,
+		message: 'Lost items fetched successfully',
+		meta,
 		data: lostItems
 	});
 });
 
-export default {
+const LostItemControllers = {
 	ReportLostItem,
 	GetLostItems
 };
+
+export default LostItemControllers;
