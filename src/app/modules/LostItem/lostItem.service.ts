@@ -33,7 +33,7 @@ const ReportLostItem = async (reportItem: LostItem, userData: User) => {
 	return newReportItem;
 };
 
-const getLostItems = async (query: any, options: QueryOptions) => {
+const GetLostItems = async (query: any, options: QueryOptions) => {
 	const { searchTerm, ...restQueryData } = query;
 
 	const page: number = Number(options.page) || 1;
@@ -96,9 +96,85 @@ const getLostItems = async (query: any, options: QueryOptions) => {
 	};
 };
 
+const GetSingleLostItem = async (id: string) => {
+	const item = await prisma.lostItem.findUniqueOrThrow({
+		where: {
+			id
+		},
+		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true
+				}
+			},
+			category: true
+		}
+	});
+
+	return item;
+};
+
+const DeleteLostItem = async (id: string, user: User) => {
+	const item = await prisma.lostItem.findUnique({
+		where: {
+			id
+		}
+	});
+
+	if (!item) {
+		throw new Error('Item not found!');
+	}
+
+	// admin can delete any item, user can delete only their items
+	if (item.userId !== user.id && user.role !== 'ADMIN') {
+		throw new Error('You are not authorized to delete this item!');
+	}
+
+	await prisma.lostItem.delete({
+		where: {
+			id
+		}
+	});
+
+	return true;
+};
+
+const UpdateLostItem = async (id: string, data: any, user: User) => {
+	const item = await prisma.lostItem.findUnique({
+		where: {
+			id
+		}
+	});
+
+	if (!item) {
+		throw new Error('Item not found!');
+	}
+
+	// admin can update any item, user can update only their items
+	if (item.userId !== user.id && user.role !== 'ADMIN') {
+		throw new Error('You are not authorized to update this item!');
+	}
+
+	const updatedItem = await prisma.lostItem.update({
+		where: {
+			id
+		},
+		data: {
+			...data
+		}
+	});
+
+	return updatedItem;
+};
+
 const LostItemServices = {
 	ReportLostItem,
-	getLostItems
+	GetLostItems,
+	GetSingleLostItem,
+	UpdateLostItem,
+	DeleteLostItem
 };
 
 export default LostItemServices;

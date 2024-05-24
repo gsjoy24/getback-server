@@ -4,7 +4,6 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import pick from '../../utils/pick';
 import sendResponse from '../../utils/sendResponse';
-import FoundItemServices from '../FoundItem/foundItem.service';
 import { lostItemFilterAbleFields } from './lostItem.constant';
 import LostItemServices from './lostItem.service';
 
@@ -22,7 +21,7 @@ const ReportLostItem = catchAsync(async (req: Request, res: Response) => {
 const GetLostItems = catchAsync(async (req: Request, res: Response) => {
 	const query = pick(req.query, lostItemFilterAbleFields);
 	const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-	const { meta, lostItems } = await LostItemServices.getLostItems(query, options);
+	const { meta, lostItems } = await LostItemServices.GetLostItems(query, options);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
@@ -33,9 +32,44 @@ const GetLostItems = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const GetSingleLostItem = catchAsync(async (req: Request, res: Response) => {
+	const lostItem = await LostItemServices.GetSingleLostItem(req.params.lostItemId);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Lost item fetched successfully',
+		data: lostItem
+	});
+});
+
+const UpdateLostItem = catchAsync(async (req: Request, res: Response) => {
+	const updatedLostItem = await LostItemServices.UpdateLostItem(req.params.lostItemId, req.body, req.user as User);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Lost item updated successfully',
+		data: updatedLostItem
+	});
+});
+
+const DeleteLostItem = catchAsync(async (req: Request, res: Response) => {
+	await LostItemServices.DeleteLostItem(req.params.lostItemId, req.user as User);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Lost item deleted successfully'
+	});
+});
+
 const LostItemControllers = {
 	ReportLostItem,
-	GetLostItems
+	GetLostItems,
+	GetSingleLostItem,
+	UpdateLostItem,
+	DeleteLostItem
 };
 
 export default LostItemControllers;
