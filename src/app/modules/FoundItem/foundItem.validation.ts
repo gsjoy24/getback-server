@@ -5,7 +5,7 @@ const ReportFoundItem = z.object({
 		categoryId: z.string({
 			required_error: 'Category id is required'
 		}),
-		foundItemName: z
+		itemName: z
 			.string({
 				required_error: 'Found item name is required'
 			})
@@ -21,6 +21,10 @@ const ReportFoundItem = z.object({
 			}),
 		location: z.string({
 			required_error: 'Location is required'
+		}),
+		pictures: z.array(z.string()),
+		foundDate: z.string({
+			required_error: 'Found date is required'
 		})
 	})
 });
