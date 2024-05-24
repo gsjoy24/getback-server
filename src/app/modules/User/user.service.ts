@@ -1,11 +1,12 @@
-import { User, UserProfile } from '@prisma/client';
+import { LostItem, User, UserProfile } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 import createToken from '../../utils/createToken';
 import prisma from '../../utils/prisma';
 
 const createUser = async (userData: User & { profile: UserProfile }) => {
-	const { password, profile, ...restUserData } = userData;
+	// i am separating the role to prevent create a admin from here. the admin will get created from the seed file or from the admin panel
+	const { role, password, profile, ...restUserData } = userData;
 	const hashedPassword = await bcrypt.hash(password, config.pass_salt);
 	const modifiedUserData = { ...restUserData, password: hashedPassword };
 
@@ -60,6 +61,34 @@ const loginUser = async (email: string, password: string) => {
 };
 
 const getUserProfile = async (userId: string) => {
+	const lostItems = await prisma.lostItem.findMany({
+		where: {
+			userId
+		},
+		take: 5,
+		orderBy: {
+			createdAt: 'desc'
+		}
+	});
+	const foundItems = await prisma.foundItem.findMany({
+		where: {
+			userId
+		},
+		take: 5,
+		orderBy: {
+			createdAt: 'desc'
+		}
+	});
+
+	const claimedItems = await prisma.claim.findMany({
+		where: {
+			userId
+		},
+		take: 5,
+		orderBy: {
+			createdAt: 'desc'
+		}
+	});
 	const userProfile = await prisma.userProfile.findUniqueOrThrow({
 		where: {
 			userId
@@ -76,7 +105,12 @@ const getUserProfile = async (userId: string) => {
 			}
 		}
 	});
-	return userProfile;
+	return {
+		...userProfile,
+		lostItems,
+		foundItems,
+		claimedItems
+	};
 };
 
 const updateUserProfile = async (userId: string, profileData: UserProfile) => {
