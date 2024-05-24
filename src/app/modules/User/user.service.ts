@@ -45,6 +45,7 @@ const loginUser = async (email: string, password: string) => {
 	const userData = {
 		id: user.id,
 		email: user.email,
+		phone: user.phone,
 		role: user.role
 	};
 	const token = createToken(userData, config.accessSecret, config.accessSecretExp);
