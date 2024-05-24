@@ -34,7 +34,7 @@ model UserProfile {
   user User? @relation(fields: [userId], references: [id])
 }
 
-model FoundItemCategory {
+model Category {
   id          String      @id @default(uuid())
   name        String      @unique
   createdAt   DateTime    @default(now())
@@ -56,8 +56,8 @@ model FoundItem {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user     User              @relation(fields: [userId], references: [id])
-  category FoundItemCategory @relation(fields: [categoryId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
   claim    Claim[]
 }
 
@@ -74,8 +74,8 @@ model LostItem {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user     User              @relation(fields: [userId], references: [id])
-  category FoundItemCategory @relation(fields: [categoryId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
 }
 
 model Claim {

@@ -5,7 +5,7 @@ import { lostItemSearchableFields } from './lostItem.constant';
 
 const ReportLostItem = async (reportItem: LostItem, userData: User) => {
 	// check if the category exists
-	await prisma.foundItemCategory.findUniqueOrThrow({
+	await prisma.category.findUniqueOrThrow({
 		where: {
 			id: reportItem.categoryId
 		}
@@ -63,7 +63,7 @@ const getLostItems = async (query: any, options: QueryOptions) => {
 		});
 	}
 
-	const foundItems = await prisma.lostItem.findMany({
+	const lostItems = await prisma.lostItem.findMany({
 		where: { AND: conditions },
 		skip,
 		take: limit,
@@ -94,13 +94,13 @@ const getLostItems = async (query: any, options: QueryOptions) => {
 			page,
 			total
 		},
-		foundItems
+		lostItems
 	};
 };
 
-const ReportItemServices = {
+const LostItemServices = {
 	ReportLostItem,
 	getLostItems
 };
 
-export default ReportItemServices;
+export default LostItemServices;

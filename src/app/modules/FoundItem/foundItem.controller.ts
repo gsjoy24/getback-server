@@ -5,10 +5,10 @@ import catchAsync from '../../utils/catchAsync';
 import pick from '../../utils/pick';
 import sendResponse from '../../utils/sendResponse';
 import { foundItemFilterAbleFields } from './foundItem.constant';
-import reportItemServices from './foundItem.service';
+import FoundItemServices from './foundItem.service';
 
 const ReportFoundItem = catchAsync(async (req: Request, res: Response) => {
-	const reportItem = await reportItemServices.ReportFoundItem(req.body, req.user as User);
+	const reportItem = await FoundItemServices.ReportFoundItem(req.body, req.user as User);
 
 	sendResponse(res, {
 		statusCode: httpStatus.CREATED,
@@ -21,7 +21,7 @@ const ReportFoundItem = catchAsync(async (req: Request, res: Response) => {
 const getFoundItems = catchAsync(async (req: Request, res: Response) => {
 	const query = pick(req.query, foundItemFilterAbleFields);
 	const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-	const { meta, foundItems } = await reportItemServices.getFoundItems(query, options);
+	const { meta, foundItems } = await FoundItemServices.getFoundItems(query, options);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
@@ -32,9 +32,9 @@ const getFoundItems = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
-const ReportItemControllers = {
+const FoundItemControllers = {
 	ReportFoundItem,
 	getFoundItems
 };
 
-export default ReportItemControllers;
+export default FoundItemControllers;

@@ -5,7 +5,7 @@ import { foundItemSearchableFields } from './foundItem.constant';
 
 const ReportFoundItem = async (reportItem: FoundItem, userData: User) => {
 	// check if the category exists
-	await prisma.foundItemCategory.findUniqueOrThrow({
+	await prisma.category.findUniqueOrThrow({
 		where: {
 			id: reportItem.categoryId
 		}
@@ -98,8 +98,8 @@ const getFoundItems = async (query: any, options: QueryOptions) => {
 	};
 };
 
-const reportItemServices = {
+const FoundItemServices = {
 	ReportFoundItem,
 	getFoundItems
 };
-export default reportItemServices;
+export default FoundItemServices;

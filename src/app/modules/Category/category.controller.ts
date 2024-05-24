@@ -9,13 +9,24 @@ const createCategory = catchAsync(async (req: Request, res: Response) => {
 	sendResponse(res, {
 		statusCode: httpStatus.CREATED,
 		success: true,
-		message: 'Found item category created successfully',
+		message: 'Category created successfully',
 		data: category
 	});
 });
 
+const getCategories = catchAsync(async (req: Request, res: Response) => {
+	const categories = await CategoryServices.getCategories();
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Categories fetched successfully',
+		data: categories
+	});
+});
+
 const CategoryControllers = {
-	createCategory
+	createCategory,
+	getCategories
 };
 
 export default CategoryControllers;
