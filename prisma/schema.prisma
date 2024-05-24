@@ -20,6 +20,7 @@ model User {
   userProfile UserProfile?
   foundedItem FoundItem[]
   claim       Claim[]
+  lostItem    LostItem[]
 }
 
 model UserProfile {
@@ -39,32 +40,53 @@ model FoundItemCategory {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   foundedItem FoundItem[]
+  lostItem    LostItem[]
 }
 
 model FoundItem {
-  id            String   @id @default(uuid())
-  userId        String
-  categoryId    String
-  foundItemName String
-  description   String
-  location      String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id          String   @id @default(uuid())
+  userId      String
+  categoryId  String
+  itemName    String
+  description String
+  location    String
+  pictures    String[]
+  foundDate   DateTime
+  isReturned  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   user     User              @relation(fields: [userId], references: [id])
   category FoundItemCategory @relation(fields: [categoryId], references: [id])
   claim    Claim[]
 }
 
+model LostItem {
+  id          String   @id @default(uuid())
+  userId      String
+  categoryId  String
+  itemName    String
+  description String
+  location    String
+  lostDate    DateTime
+  pictures    String[]
+  isFound     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user     User              @relation(fields: [userId], references: [id])
+  category FoundItemCategory @relation(fields: [categoryId], references: [id])
+}
+
 model Claim {
-  id                     String      @id @default(uuid())
-  userId                 String
-  foundItemId            String
-  status                 ClaimStatus @default(PENDING)
-  distinguishingFeatures String
-  lostDate               DateTime
-  createdAt              DateTime    @default(now())
-  updatedAt              DateTime    @updatedAt
+  id          String      @id @default(uuid())
+  userId      String
+  foundItemId String
+  status      ClaimStatus @default(PENDING)
+  description String
+  lostDate    DateTime
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
   user      User      @relation(fields: [userId], references: [id])
   foundItem FoundItem @relation(fields: [foundItemId], references: [id])
