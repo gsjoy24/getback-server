@@ -7,7 +7,6 @@ import prisma from '../../utils/prisma';
 const createUser = async (userData: User & { profile: UserProfile }) => {
 	const { password, profile, ...restUserData } = userData;
 	const hashedPassword = await bcrypt.hash(password, config.pass_salt);
-
 	const modifiedUserData = { ...restUserData, password: hashedPassword };
 
 	const newUser = await prisma.$transaction(async (trx) => {

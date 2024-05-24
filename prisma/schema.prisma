@@ -12,6 +12,7 @@ model User {
   name     String
   email    String @unique
   password String
+  role     String @default("USER")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -19,16 +20,6 @@ model User {
   userProfile UserProfile?
   foundedItem FoundItem[]
   claim       Claim[]
-}
-
-model Admin {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  password String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model UserProfile {
@@ -83,4 +74,9 @@ enum ClaimStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum Role {
+  USER
+  ADMIN
 }
