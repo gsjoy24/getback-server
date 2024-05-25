@@ -76,13 +76,24 @@ const toggleUserRole = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const toggleUserStatus = catchAsync(async (req: Request, res: Response) => {
+	const user = await UserServices.toggleUserStatus(req.params.id);
+	sendResponse(res, {
+		statusCode: httpStatus.CREATED,
+		success: true,
+		message: 'User status updated successfully',
+		data: user
+	});
+});
+
 const UserControllers = {
 	createUser,
 	getAllUsers,
 	loginUser,
 	getUserProfile,
 	updateUserProfile,
-	toggleUserRole
+	toggleUserRole,
+	toggleUserStatus
 };
 
 export default UserControllers;

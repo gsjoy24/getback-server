@@ -23,4 +23,6 @@ router.put(
 
 router.put('/toggle-user-role/:id', auth(userRoles.ADMIN), UserControllers.toggleUserRole);
 
+router.put('/toggle-user-status/:id', auth(userRoles.ADMIN), UserControllers.toggleUserStatus);
+
 export const userRoutes = router;

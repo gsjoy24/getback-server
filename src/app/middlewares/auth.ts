@@ -17,6 +17,10 @@ const auth =
 				where: { email: verifiedUser.email }
 			});
 
+			if (user.status === 'BLOCKED') {
+				throw new Error('Your account is blocked!');
+			}
+
 			if (roles.length && !roles.includes(user.role)) {
 				throw new Error('You are not authorized!');
 			}

@@ -94,6 +94,10 @@ const loginUser = async (email: string, password: string) => {
 		}
 	});
 
+	if (user.status === 'BLOCKED') {
+		throw new Error('Your account is suspended!');
+	}
+
 	const isPasswordMatch = await bcrypt.compare(password, user.password);
 	if (!isPasswordMatch) {
 		throw new Error('Invalid password');
@@ -207,12 +211,31 @@ const toggleUserRole = async (userId: string) => {
 	return result;
 };
 
+const toggleUserStatus = async (userId: string) => {
+	const user = await prisma.user.findUniqueOrThrow({
+		where: {
+			id: userId
+		}
+	});
+
+	const result = await prisma.user.update({
+		where: {
+			id: userId
+		},
+		data: {
+			status: user.status === 'ACTIVE' ? 'BLOCKED' : 'ACTIVE'
+		}
+	});
+	return result;
+};
+
 const UserServices = {
 	createUser,
 	loginUser,
 	getUserProfile,
 	updateUserProfile,
 	toggleUserRole,
+	toggleUserStatus,
 	getAllUsers
 };
 
