@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const createCategory = z.object({
+const createOrUpdateCategory = z.object({
 	body: z.object({
 		name: z
 			.string({
@@ -17,7 +17,7 @@ const createCategory = z.object({
 });
 
 const CategoryValidation = {
-	createCategory
+	createOrUpdateCategory
 };
 
 export default CategoryValidation;

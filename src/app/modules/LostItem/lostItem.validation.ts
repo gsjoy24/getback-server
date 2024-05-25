@@ -46,7 +46,8 @@ const UpdateLostItem = z.object({
 			.optional(),
 		location: z.string().optional(),
 		pictures: z.array(z.string()).optional(),
-		lostDate: z.string().optional()
+		lostDate: z.string().optional(),
+		isFound: z.boolean().optional()
 	})
 });
 

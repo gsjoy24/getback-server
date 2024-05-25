@@ -33,6 +33,39 @@ const ReportFoundItem = async (reportItem: FoundItem, userData: User) => {
 	return newReportItem;
 };
 
+const deleteFoundItem = async (id: string, user: User) => {
+	const foundItem = await prisma.foundItem.findUniqueOrThrow({
+		where: { id }
+	});
+
+	if (foundItem.userId !== user.id) {
+		throw new Error('You are not authorized to delete this item');
+	}
+
+	await prisma.foundItem.delete({
+		where: { id }
+	});
+
+	return true;
+};
+
+const updateFoundItem = async (id: string, data: any, user: User) => {
+	const foundItem = await prisma.foundItem.findUniqueOrThrow({
+		where: { id }
+	});
+
+	if (foundItem.userId !== user.id && user.role !== 'ADMIN') {
+		throw new Error('You are not authorized to update this item');
+	}
+
+	const updatedItem = await prisma.foundItem.update({
+		where: { id },
+		data
+	});
+
+	return updatedItem;
+};
+
 const getFoundItems = async (query: any, options: QueryOptions) => {
 	const { searchTerm, ...restQueryData } = query;
 
@@ -100,6 +133,8 @@ const getFoundItems = async (query: any, options: QueryOptions) => {
 
 const FoundItemServices = {
 	ReportFoundItem,
+	deleteFoundItem,
+	updateFoundItem,
 	getFoundItems
 };
 export default FoundItemServices;

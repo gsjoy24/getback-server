@@ -29,8 +29,31 @@ const ReportFoundItem = z.object({
 	})
 });
 
+const UpdateFoundItem = z.object({
+	body: z.object({
+		categoryId: z.string().optional(),
+		itemName: z
+			.string()
+			.min(5, {
+				message: 'Found item name must be at least 5 characters long'
+			})
+			.optional(),
+		description: z
+			.string()
+			.min(5, {
+				message: 'Description must be at least 5 characters long'
+			})
+			.optional(),
+		location: z.string().optional(),
+		pictures: z.array(z.string()).optional(),
+		foundDate: z.string().optional(),
+		isReturned: z.boolean().optional()
+	})
+});
+
 const ReportItemValidations = {
-	ReportFoundItem
+	ReportFoundItem,
+	UpdateFoundItem
 };
 
 export default ReportItemValidations;
