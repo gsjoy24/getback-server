@@ -10,6 +10,8 @@ router.get('/my-profile', auth(userRoles.ADMIN, userRoles.USER), UserControllers
 
 router.post('/register', validateRequest(userValidationSchemas.createUser), UserControllers.createUser);
 
+router.get('/all', auth(userRoles.ADMIN), UserControllers.getAllUsers);
+
 router.post('/login', validateRequest(userValidationSchemas.loginUser), UserControllers.loginUser);
 
 router.put(
@@ -19,6 +21,6 @@ router.put(
 	UserControllers.updateUserProfile
 );
 
-router.put('/make-admin/:id', auth(userRoles.ADMIN), UserControllers.makeAdmin);
+router.put('/toggle-user-role/:id', auth(userRoles.ADMIN), UserControllers.toggleUserRole);
 
 export const userRoutes = router;
