@@ -32,6 +32,21 @@ const createUser = async (userData: User & { profile: UserProfile }) => {
 	return newUser;
 };
 
+const getAllUsers = async () => {
+	const users = await prisma.user.findMany({
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			phone: true,
+			role: true,
+			createdAt: true,
+			updatedAt: true
+		}
+	});
+	return users;
+};
+
 const loginUser = async (email: string, password: string) => {
 	const user = await prisma.user.findUniqueOrThrow({
 		where: {
@@ -134,11 +149,30 @@ const updateUserProfile = async (userId: string, profileData: UserProfile) => {
 	return userProfile;
 };
 
+const makeAdmin = async (userId: string) => {
+	await prisma.user.findUniqueOrThrow({
+		where: {
+			id: userId
+		}
+	});
+
+	const result = await prisma.user.update({
+		where: {
+			id: userId
+		},
+		data: {
+			role: 'ADMIN'
+		}
+	});
+	return result;
+};
+
 const UserServices = {
 	createUser,
 	loginUser,
 	getUserProfile,
-	updateUserProfile
+	updateUserProfile,
+	makeAdmin
 };
 
 export default UserServices;

@@ -19,4 +19,6 @@ router.put(
 	UserControllers.updateUserProfile
 );
 
+router.put('/make-admin/:id', auth(userRoles.ADMIN), UserControllers.makeAdmin);
+
 export const userRoutes = router;

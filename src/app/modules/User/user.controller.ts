@@ -51,11 +51,22 @@ const updateUserProfile = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const makeAdmin = catchAsync(async (req: Request, res: Response) => {
+	const user = await UserServices.makeAdmin(req.params.id);
+	sendResponse(res, {
+		statusCode: httpStatus.CREATED,
+		success: true,
+		message: 'User role updated successfully',
+		data: user
+	});
+});
+
 const UserControllers = {
 	createUser,
 	loginUser,
 	getUserProfile,
-	updateUserProfile
+	updateUserProfile,
+	makeAdmin
 };
 
 export default UserControllers;
