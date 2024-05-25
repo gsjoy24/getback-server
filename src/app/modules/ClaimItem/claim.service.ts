@@ -41,7 +41,7 @@ const getClaims = async () => {
 	return claims;
 };
 
-const UpdateStatus = async (claimId: string, status: ClaimStatus) => {
+const updateStatus = async (claimId: string, status: ClaimStatus) => {
 	await prisma.claim.findUniqueOrThrow({
 		where: {
 			id: claimId
@@ -60,10 +60,29 @@ const UpdateStatus = async (claimId: string, status: ClaimStatus) => {
 	return claim;
 };
 
+const deleteClaim = async (claimId: string, userData: User) => {
+	const data = await prisma.claim.findUniqueOrThrow({
+		where: {
+			id: claimId
+		}
+	});
+
+	if (data.userId !== userData.id && userData.role !== 'ADMIN') {
+		throw new Error('You are not authorized to delete this claim');
+	}
+
+	await prisma.claim.delete({
+		where: {
+			id: claimId
+		}
+	});
+};
+
 const claimServices = {
 	claimItem,
 	getClaims,
-	UpdateStatus
+	updateStatus,
+	deleteClaim
 };
 
 export default claimServices;
