@@ -12,30 +12,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("../config"));
 const prisma_1 = __importDefault(require("../utils/prisma"));
-const verifyToken_1 = __importDefault(require("../utils/verifyToken"));
-const auth = (...roles) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const userRoles_1 = __importDefault(require("../utils/userRoles"));
+const seedAdmin = () => __awaiter(void 0, void 0, void 0, function* () {
+    const adminData = {
+        name: 'Gour Saha Joy',
+        email: config_1.default.adminEmail,
+        password: config_1.default.adminPass,
+        role: userRoles_1.default.ADMIN
+    };
     try {
-        const token = req.headers.authorization;
-        if (!token) {
-            throw new Error('You are not authorized!');
-        }
-        const verifiedUser = (0, verifyToken_1.default)(token, config_1.default.accessSecret);
-        const user = yield prisma_1.default.user.findUniqueOrThrow({
-            where: { email: verifiedUser.email }
+        const findAdmin = yield prisma_1.default.user.findUnique({
+            where: {
+                email: adminData.email,
+                role: userRoles_1.default.ADMIN
+            }
         });
-        if (user.status === 'BLOCKED') {
-            throw new Error('Your account is blocked!');
+        const hashedPassword = yield bcrypt_1.default.hash(adminData === null || adminData === void 0 ? void 0 : adminData.password, config_1.default.pass_salt);
+        const modifiedUserData = Object.assign(Object.assign({}, adminData), { password: hashedPassword });
+        if (!findAdmin) {
+            yield prisma_1.default.user.create({
+                data: modifiedUserData
+            });
         }
-        if (roles.length && !roles.includes(user.role)) {
-            throw new Error('You are not authorized!');
-        }
-        req.user = user;
-        next();
     }
     catch (error) {
-        next(error);
+        console.log(error);
     }
 });
-exports.default = auth;
+exports.default = seedAdmin;

@@ -14,8 +14,7 @@ const emailSender = async (subject: string, email: string, html: string) => {
 
 	const info = await transporter.sendMail({
 		from: '"Lost And Found" <gour.joy24@gmail.com>',
-		// to: email,
-		to: 'goursaha307@gmail.com',
+		to: email,
 		subject,
 		html
 	});

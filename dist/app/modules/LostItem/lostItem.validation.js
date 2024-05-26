@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const zod_1 = require("zod");
-const ReportFoundItem = zod_1.z.object({
+const ReportLostItem = zod_1.z.object({
     body: zod_1.z.object({
         categoryId: zod_1.z.string({
             required_error: 'Category id is required'
@@ -24,12 +24,12 @@ const ReportFoundItem = zod_1.z.object({
             required_error: 'Location is required'
         }),
         pictures: zod_1.z.array(zod_1.z.string()),
-        foundDate: zod_1.z.string({
-            required_error: 'Found date is required'
+        lostDate: zod_1.z.string({
+            required_error: 'Lost date is required'
         })
     })
 });
-const UpdateFoundItem = zod_1.z.object({
+const UpdateLostItem = zod_1.z.object({
     body: zod_1.z.object({
         categoryId: zod_1.z.string().optional(),
         itemName: zod_1.z
@@ -46,12 +46,12 @@ const UpdateFoundItem = zod_1.z.object({
             .optional(),
         location: zod_1.z.string().optional(),
         pictures: zod_1.z.array(zod_1.z.string()).optional(),
-        foundDate: zod_1.z.string().optional(),
-        isReturned: zod_1.z.boolean().optional()
+        lostDate: zod_1.z.string().optional(),
+        isFound: zod_1.z.boolean().optional()
     })
 });
-const ReportItemValidations = {
-    ReportFoundItem,
-    UpdateFoundItem
+const LostValidations = {
+    ReportLostItem,
+    UpdateLostItem
 };
-exports.default = ReportItemValidations;
+exports.default = LostValidations;

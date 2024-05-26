@@ -24,15 +24,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const prisma_1 = __importDefault(require("../../utils/prisma"));
-const foundItem_constant_1 = require("./foundItem.constant");
-const ReportFoundItem = (reportItem, userData) => __awaiter(void 0, void 0, void 0, function* () {
+const lostItem_constant_1 = require("./lostItem.constant");
+const reportLostItem = (reportItem, userData) => __awaiter(void 0, void 0, void 0, function* () {
     // check if the category exists
     yield prisma_1.default.category.findUniqueOrThrow({
         where: {
             id: reportItem.categoryId
         }
     });
-    const newReportItem = yield prisma_1.default.foundItem.create({
+    const newReportItem = yield prisma_1.default.lostItem.create({
         data: Object.assign(Object.assign({}, reportItem), { userId: userData.id }),
         include: {
             user: {
@@ -49,7 +49,7 @@ const ReportFoundItem = (reportItem, userData) => __awaiter(void 0, void 0, void
     });
     return newReportItem;
 });
-const getFoundItems = (query, options) => __awaiter(void 0, void 0, void 0, function* () {
+const getLostItems = (query, options) => __awaiter(void 0, void 0, void 0, function* () {
     const { searchTerm } = query, restQueryData = __rest(query, ["searchTerm"]);
     const page = Number(options.page) || 1;
     const limit = Number(options.limit) || 10;
@@ -59,7 +59,7 @@ const getFoundItems = (query, options) => __awaiter(void 0, void 0, void 0, func
     const conditions = [];
     if (searchTerm) {
         conditions.push({
-            OR: foundItem_constant_1.foundItemSearchableFields.map((field) => ({
+            OR: lostItem_constant_1.lostItemSearchableFields.map((field) => ({
                 [field]: { contains: searchTerm, mode: 'insensitive' }
             }))
         });
@@ -73,7 +73,7 @@ const getFoundItems = (query, options) => __awaiter(void 0, void 0, void 0, func
             }))
         });
     }
-    const foundItems = yield prisma_1.default.foundItem.findMany({
+    const lostItems = yield prisma_1.default.lostItem.findMany({
         where: { AND: conditions },
         skip,
         take: limit,
@@ -85,15 +85,13 @@ const getFoundItems = (query, options) => __awaiter(void 0, void 0, void 0, func
                 select: {
                     id: true,
                     name: true,
-                    email: true,
-                    createdAt: true,
-                    updatedAt: true
+                    email: true
                 }
             },
             category: true
         }
     });
-    const total = yield prisma_1.default.foundItem.count({
+    const total = yield prisma_1.default.lostItem.count({
         where: { AND: conditions }
     });
     return {
@@ -102,16 +100,16 @@ const getFoundItems = (query, options) => __awaiter(void 0, void 0, void 0, func
             page,
             total
         },
-        foundItems
+        lostItems
     };
 });
-const getMyFoundItems = (user, options) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyLostItems = (user, options) => __awaiter(void 0, void 0, void 0, function* () {
     const page = Number(options.page) || 1;
     const limit = Number(options.limit) || 10;
     const skip = (Number(page) - 1) * limit;
     const sortBy = options.sortBy || 'createdAt';
     const sortOrder = options.sortOrder || 'desc';
-    const foundItems = yield prisma_1.default.foundItem.findMany({
+    const lostItems = yield prisma_1.default.lostItem.findMany({
         where: {
             userId: user.id
         },
@@ -121,11 +119,10 @@ const getMyFoundItems = (user, options) => __awaiter(void 0, void 0, void 0, fun
             [sortBy]: sortOrder
         },
         include: {
-            category: true,
-            claim: true
+            category: true
         }
     });
-    const total = yield prisma_1.default.foundItem.count({
+    const total = yield prisma_1.default.lostItem.count({
         where: {
             userId: user.id
         }
@@ -136,62 +133,74 @@ const getMyFoundItems = (user, options) => __awaiter(void 0, void 0, void 0, fun
             page,
             total
         },
-        foundItems
+        lostItems
     };
 });
-const getFoundItemById = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundItem = yield prisma_1.default.foundItem.findUnique({
-        where: { id },
+const getSingleLostItem = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const item = yield prisma_1.default.lostItem.findUniqueOrThrow({
+        where: {
+            id
+        },
         include: {
             user: {
                 select: {
                     id: true,
                     name: true,
-                    email: true,
-                    createdAt: true,
-                    updatedAt: true
+                    email: true
                 }
             },
-            category: true,
-            claim: true
+            category: true
         }
     });
-    if (!foundItem) {
-        throw new Error('Item not found');
-    }
-    return foundItem;
+    return item;
 });
-const deleteFoundItem = (id, user) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundItem = yield prisma_1.default.foundItem.findUniqueOrThrow({
-        where: { id }
+const deleteLostItem = (id, user) => __awaiter(void 0, void 0, void 0, function* () {
+    const item = yield prisma_1.default.lostItem.findUnique({
+        where: {
+            id
+        }
     });
-    if (foundItem.userId !== user.id) {
-        throw new Error('You are not authorized to delete this item');
+    if (!item) {
+        throw new Error('Item not found!');
     }
-    yield prisma_1.default.foundItem.delete({
-        where: { id }
+    // admin can delete any item, user can delete only their items
+    if (item.userId !== user.id && user.role !== 'ADMIN') {
+        throw new Error('You are not authorized to delete this item!');
+    }
+    yield prisma_1.default.lostItem.delete({
+        where: {
+            id
+        }
     });
     return true;
 });
-const updateFoundItem = (id, data, user) => __awaiter(void 0, void 0, void 0, function* () {
-    const foundItem = yield prisma_1.default.foundItem.findUniqueOrThrow({
-        where: { id }
+const updateLostItem = (id, data, user) => __awaiter(void 0, void 0, void 0, function* () {
+    const item = yield prisma_1.default.lostItem.findUnique({
+        where: {
+            id
+        }
     });
-    if (foundItem.userId !== user.id && user.role !== 'ADMIN') {
-        throw new Error('You are not authorized to update this item');
+    if (!item) {
+        throw new Error('Item not found!');
     }
-    const updatedItem = yield prisma_1.default.foundItem.update({
-        where: { id },
-        data
+    // admin can update any item, user can update only their items
+    if (item.userId !== user.id && user.role !== 'ADMIN') {
+        throw new Error('You are not authorized to update this item!');
+    }
+    const updatedItem = yield prisma_1.default.lostItem.update({
+        where: {
+            id
+        },
+        data: Object.assign({}, data)
     });
     return updatedItem;
 });
-const FoundItemServices = {
-    ReportFoundItem,
-    deleteFoundItem,
-    updateFoundItem,
-    getFoundItems,
-    getFoundItemById,
-    getMyFoundItems
+const LostItemServices = {
+    reportLostItem,
+    getLostItems,
+    getSingleLostItem,
+    updateLostItem,
+    deleteLostItem,
+    getMyLostItems
 };
-exports.default = FoundItemServices;
+exports.default = LostItemServices;

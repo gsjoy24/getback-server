@@ -39,8 +39,52 @@ const getFoundItems = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         data: foundItems
     });
 }));
-const ReportItemControllers = {
+const getFoundItemById = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const foundItem = yield foundItem_service_1.default.getFoundItemById(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Found item retrieved successfully',
+        data: foundItem
+    });
+}));
+const getMyFoundItems = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const { meta, foundItems } = yield foundItem_service_1.default.getMyFoundItems(req.user, options);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Found items retrieved successfully',
+        meta,
+        data: foundItems
+    });
+}));
+const deleteFoundItem = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    yield foundItem_service_1.default.deleteFoundItem(id, req.user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Found item deleted successfully'
+    });
+}));
+const updateFoundItem = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const updatedItem = yield foundItem_service_1.default.updateFoundItem(id, req.body, req.user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Found item updated successfully',
+        data: updatedItem
+    });
+}));
+const FoundItemControllers = {
     ReportFoundItem,
-    getFoundItems
+    getFoundItems,
+    deleteFoundItem,
+    updateFoundItem,
+    getFoundItemById,
+    getMyFoundItems
 };
-exports.default = ReportItemControllers;
+exports.default = FoundItemControllers;

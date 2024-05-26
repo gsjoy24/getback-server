@@ -1,15 +1,9 @@
-import { ClaimStatus } from '@prisma/client';
-
-type TResponse = {
-	response: string;
-	status: ClaimStatus;
-};
-
-const emailTemp = (name: string, payload: TResponse) => {
-	const currentYear: number = new Date().getFullYear();
-	const { response, status } = payload;
-
-	const temp = `<!DOCTYPE html>
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const emailTemp = (name, payload) => {
+    const currentYear = new Date().getFullYear();
+    const { response, status } = payload;
+    const temp = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -120,8 +114,6 @@ const emailTemp = (name: string, payload: TResponse) => {
 </body>
 </html>
 `;
-
-	return temp;
+    return temp;
 };
-
-export default emailTemp;
+exports.default = emailTemp;

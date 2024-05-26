@@ -25,7 +25,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
+const pick_1 = __importDefault(require("../../utils/pick"));
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
+const user_constant_1 = require("./user.constant");
 const user_service_1 = __importDefault(require("./user.service"));
 const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_service_1.default.createUser(req.body);
@@ -34,6 +36,18 @@ const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         success: true,
         message: 'User registered successfully',
         data: user
+    });
+}));
+const getAllUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = (0, pick_1.default)(req.query, user_constant_1.userFilterAbleFields);
+    const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const { meta, users } = yield user_service_1.default.getAllUsers(query, options);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Users retrieved successfully',
+        meta,
+        data: users
     });
 }));
 const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -70,10 +84,31 @@ const updateUserProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void
         data: profile
     });
 }));
+const toggleUserRole = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_service_1.default.toggleUserRole(req.params.id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.CREATED,
+        success: true,
+        message: 'User role updated successfully',
+        data: user
+    });
+}));
+const toggleUserStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield user_service_1.default.toggleUserStatus(req.params.id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.CREATED,
+        success: true,
+        message: 'User status updated successfully',
+        data: user
+    });
+}));
 const UserControllers = {
     createUser,
+    getAllUsers,
     loginUser,
     getUserProfile,
-    updateUserProfile
+    updateUserProfile,
+    toggleUserRole,
+    toggleUserStatus
 };
 exports.default = UserControllers;

@@ -12,30 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const nodemailer_1 = __importDefault(require("nodemailer"));
 const config_1 = __importDefault(require("../config"));
-const prisma_1 = __importDefault(require("../utils/prisma"));
-const verifyToken_1 = __importDefault(require("../utils/verifyToken"));
-const auth = (...roles) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const token = req.headers.authorization;
-        if (!token) {
-            throw new Error('You are not authorized!');
+const emailSender = (subject, email, html) => __awaiter(void 0, void 0, void 0, function* () {
+    const transporter = nodemailer_1.default.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
+        auth: {
+            user: config_1.default.app_email,
+            pass: config_1.default.app_password
         }
-        const verifiedUser = (0, verifyToken_1.default)(token, config_1.default.accessSecret);
-        const user = yield prisma_1.default.user.findUniqueOrThrow({
-            where: { email: verifiedUser.email }
-        });
-        if (user.status === 'BLOCKED') {
-            throw new Error('Your account is blocked!');
-        }
-        if (roles.length && !roles.includes(user.role)) {
-            throw new Error('You are not authorized!');
-        }
-        req.user = user;
-        next();
-    }
-    catch (error) {
-        next(error);
-    }
+    });
+    const info = yield transporter.sendMail({
+        from: '"Lost And Found" <gour.joy24@gmail.com>',
+        // to: email,
+        to: 'goursaha307@gmail.com',
+        subject,
+        html
+    });
 });
-exports.default = auth;
+exports.default = emailSender;

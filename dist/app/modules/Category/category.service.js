@@ -14,20 +14,53 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const prisma_1 = __importDefault(require("../../utils/prisma"));
 const createCategory = (categoryData) => __awaiter(void 0, void 0, void 0, function* () {
-    const isExist = yield prisma_1.default.foundItemCategory.findUnique({
+    const isExist = yield prisma_1.default.category.findUnique({
         where: {
             name: categoryData.name
         }
     });
     if (isExist) {
-        throw new Error('Category already exist');
+        throw new Error('Category already exist!');
     }
-    const newCategory = yield prisma_1.default.foundItemCategory.create({
+    const newCategory = yield prisma_1.default.category.create({
         data: categoryData
     });
     return newCategory;
 });
+const getCategories = () => __awaiter(void 0, void 0, void 0, function* () {
+    const categories = yield prisma_1.default.category.findMany({
+        orderBy: {
+            name: 'asc'
+        }
+    });
+    return categories;
+});
+const updateCategory = (categoryId, categoryData) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.category.findUniqueOrThrow({
+        where: {
+            id: categoryId
+        }
+    });
+    const updatedCategory = yield prisma_1.default.category.update({
+        where: {
+            id: categoryId
+        },
+        data: categoryData
+    });
+    return updatedCategory;
+});
+const deleteCategory = (categoryId) => __awaiter(void 0, void 0, void 0, function* () {
+    const deletedCategory = yield prisma_1.default.category.delete({
+        where: {
+            id: categoryId
+        }
+    });
+    return deletedCategory;
+});
 const CategoryServices = {
-    createCategory
+    createCategory,
+    getCategories,
+    updateCategory,
+    deleteCategory
 };
 exports.default = CategoryServices;
