@@ -55,11 +55,24 @@ const updateFoundItem = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const getFoundItemById = catchAsync(async (req: Request, res: Response) => {
+	const { id } = req.params;
+	const foundItem = await FoundItemServices.getFoundItemById(id);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Found item retrieved successfully',
+		data: foundItem
+	});
+});
+
 const FoundItemControllers = {
 	ReportFoundItem,
 	getFoundItems,
 	deleteFoundItem,
-	updateFoundItem
+	updateFoundItem,
+	getFoundItemById
 };
 
 export default FoundItemControllers;

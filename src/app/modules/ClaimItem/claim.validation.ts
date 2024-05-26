@@ -5,7 +5,7 @@ const createClaimSchema = z.object({
 		foundItemId: z.string({
 			required_error: 'Found item id is required'
 		}),
-		distinguishingFeatures: z.string({
+		description: z.string({
 			required_error: 'Distinguishing features is required'
 		}),
 		lostDate: z.string({
@@ -16,6 +16,8 @@ const createClaimSchema = z.object({
 
 const updateClaimSchema = z.object({
 	body: z.object({
+		description: z.string().optional(),
+		lostDate: z.string().optional(),
 		status: z.enum(['PENDING', 'APPROVED', 'REJECTED'], {
 			required_error: 'Status is required',
 			invalid_type_error: 'Status must be one of PENDING, APPROVED or REJECTED'

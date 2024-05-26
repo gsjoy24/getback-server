@@ -9,6 +9,8 @@ const router = express.Router();
 
 router.get('/found-items', FoundItemControllers.getFoundItems);
 
+router.get('/found-items/:id', FoundItemControllers.getFoundItemById);
+
 router.post(
 	'/found-items',
 	auth(userRoles.ADMIN, userRoles.USER),

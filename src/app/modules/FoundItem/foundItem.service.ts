@@ -131,10 +131,36 @@ const getFoundItems = async (query: any, options: QueryOptions) => {
 	};
 };
 
+const getFoundItemById = async (id: string) => {
+	const foundItem = await prisma.foundItem.findUnique({
+		where: { id },
+		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					createdAt: true,
+					updatedAt: true
+				}
+			},
+			category: true,
+			claim: true
+		}
+	});
+
+	if (!foundItem) {
+		throw new Error('Item not found');
+	}
+
+	return foundItem;
+};
+
 const FoundItemServices = {
 	ReportFoundItem,
 	deleteFoundItem,
 	updateFoundItem,
-	getFoundItems
+	getFoundItems,
+	getFoundItemById
 };
 export default FoundItemServices;

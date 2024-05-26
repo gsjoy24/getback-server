@@ -84,6 +84,7 @@ model Claim {
   id          String      @id @default(uuid())
   userId      String
   foundItemId String
+  response    String      @default("Waiting for response")
   status      ClaimStatus @default(PENDING)
   description String
   lostDate    DateTime
