@@ -1,7 +1,14 @@
 import { Claim, ClaimStatus, Prisma, User } from '@prisma/client';
 import { QueryOptions } from '../../types';
+import emailSender from '../../utils/emailSender';
+import emailTemp from '../../utils/emailTemp';
 import prisma from '../../utils/prisma';
 import { claimSearchableFields } from './claim.constant';
+
+type TResponse = {
+	response: string;
+	status: ClaimStatus;
+};
 
 const claimItem = async (claimItem: Claim, userData: User) => {
 	// check if the the item exists
@@ -150,15 +157,17 @@ const updateClaim = async (claimId: string, payload: Claim, user: User) => {
 	return claim;
 };
 
-const updateStatus = async (claimId: string, payload: Claim, user: User) => {
+const updateStatus = async (claimId: string, payload: TResponse, user: User) => {
 	const claim = await prisma.claim.findUniqueOrThrow({
 		where: {
 			id: claimId
 		},
 		include: {
-			foundItem: true
+			foundItem: true,
+			user: true
 		}
 	});
+	console.log({ claim, user });
 
 	if (claim.foundItem.userId !== user.id && user.role !== 'ADMIN') {
 		throw new Error('You are not authorized to update the status of this claim');
@@ -167,6 +176,8 @@ const updateStatus = async (claimId: string, payload: Claim, user: User) => {
 	if (claim.status !== ClaimStatus.PENDING) {
 		throw new Error('You can only update the status of a pending claim');
 	}
+
+	await emailSender('Claim Status Notification', claim.user.email, emailTemp(claim.user.name, payload));
 
 	const updatedClaim = await prisma.claim.update({
 		where: {
