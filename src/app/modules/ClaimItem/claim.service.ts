@@ -167,7 +167,6 @@ const updateStatus = async (claimId: string, payload: TResponse, user: User) => 
 			user: true
 		}
 	});
-	console.log({ claim, user });
 
 	if (claim.foundItem.userId !== user.id && user.role !== 'ADMIN') {
 		throw new Error('You are not authorized to update the status of this claim');
