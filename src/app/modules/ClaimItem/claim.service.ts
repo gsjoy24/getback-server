@@ -41,23 +41,68 @@ const getClaims = async () => {
 	return claims;
 };
 
-const updateStatus = async (claimId: string, status: ClaimStatus) => {
-	await prisma.claim.findUniqueOrThrow({
+const updateClaim = async (claimId: string, payload: Claim, user: User) => {
+	// status and response can only be updated by an admin or the user who reported the found item
+	const { status, response, ...restData } = payload;
+
+	if (status && response) {
+		throw new Error('You are not authorized to update the status or response of this claim');
+	}
+
+	const data = await prisma.claim.findUniqueOrThrow({
 		where: {
 			id: claimId
 		}
 	});
+
+	if (data.userId !== user.id) {
+		throw new Error('You are not authorized to update this claim');
+	}
+
+	if (data.status === ClaimStatus.REJECTED || data.status === ClaimStatus.APPROVED) {
+		throw new Error('You can only update a pending claim!');
+	}
 
 	const claim = await prisma.claim.update({
 		where: {
 			id: claimId
 		},
 		data: {
-			status
+			...restData
 		}
 	});
 
 	return claim;
+};
+
+const updateStatus = async (claimId: string, payload: Claim, user: User) => {
+	const claim = await prisma.claim.findUniqueOrThrow({
+		where: {
+			id: claimId
+		},
+		include: {
+			foundItem: true
+		}
+	});
+
+	if (claim.foundItem.userId !== user.id && user.role !== 'ADMIN') {
+		throw new Error('You are not authorized to update the status of this claim');
+	}
+
+	if (claim.status !== ClaimStatus.PENDING) {
+		throw new Error('You can only update the status of a pending claim');
+	}
+
+	const updatedClaim = await prisma.claim.update({
+		where: {
+			id: claimId
+		},
+		data: {
+			...payload
+		}
+	});
+
+	return updatedClaim;
 };
 
 const deleteClaim = async (claimId: string, userData: User) => {
@@ -81,6 +126,7 @@ const deleteClaim = async (claimId: string, userData: User) => {
 const claimServices = {
 	claimItem,
 	getClaims,
+	updateClaim,
 	updateStatus,
 	deleteClaim
 };

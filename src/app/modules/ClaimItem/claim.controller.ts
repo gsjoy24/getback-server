@@ -27,10 +27,21 @@ const getClaims = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const updateClaim = catchAsync(async (req: Request, res: Response) => {
+	const { claimId } = req.params;
+	const updatedClaim = await claimServices.updateClaim(claimId, req.body, req.user as User);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Claim data updated successfully',
+		data: updatedClaim
+	});
+});
+
 const updateStatus = catchAsync(async (req: Request, res: Response) => {
 	const { claimId } = req.params;
-	const { status } = req.body;
-	const updatedClaim = await claimServices.updateStatus(claimId, status);
+	const updatedClaim = await claimServices.updateStatus(claimId, req.body, req.user as User);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
@@ -54,8 +65,9 @@ const deleteClaim = catchAsync(async (req: Request, res: Response) => {
 const ClaimControllers = {
 	claimItem,
 	getClaims,
-	updateStatus,
-	deleteClaim
+	updateClaim,
+	deleteClaim,
+	updateStatus
 };
 
 export default ClaimControllers;

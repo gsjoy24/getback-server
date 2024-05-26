@@ -13,11 +13,20 @@ router.post(
 	validateRequest(ClaimValidations.createClaimSchema),
 	ClaimControllers.claimItem
 );
+
 router.get('/claims', auth(userRoles.ADMIN, userRoles.USER), ClaimControllers.getClaims);
+
 router.patch(
 	'/claims/:claimId',
 	auth(userRoles.ADMIN, userRoles.USER),
 	validateRequest(ClaimValidations.updateClaimSchema),
+	ClaimControllers.updateClaim
+);
+
+router.patch(
+	'/claims/status/:claimId',
+	auth(userRoles.ADMIN, userRoles.USER),
+	validateRequest(ClaimValidations.updateClaimStatus),
 	ClaimControllers.updateStatus
 );
 
