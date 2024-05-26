@@ -32,6 +32,31 @@ const getFoundItems = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const getFoundItemById = catchAsync(async (req: Request, res: Response) => {
+	const { id } = req.params;
+	const foundItem = await FoundItemServices.getFoundItemById(id);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Found item retrieved successfully',
+		data: foundItem
+	});
+});
+
+const getMyFoundItems = catchAsync(async (req: Request, res: Response) => {
+	const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+	const { meta, foundItems } = await FoundItemServices.getMyFoundItems(req.user as User, options);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Found items retrieved successfully',
+		meta,
+		data: foundItems
+	});
+});
+
 const deleteFoundItem = catchAsync(async (req: Request, res: Response) => {
 	const { id } = req.params;
 	await FoundItemServices.deleteFoundItem(id, req.user as User);
@@ -55,24 +80,13 @@ const updateFoundItem = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
-const getFoundItemById = catchAsync(async (req: Request, res: Response) => {
-	const { id } = req.params;
-	const foundItem = await FoundItemServices.getFoundItemById(id);
-
-	sendResponse(res, {
-		statusCode: httpStatus.OK,
-		success: true,
-		message: 'Found item retrieved successfully',
-		data: foundItem
-	});
-});
-
 const FoundItemControllers = {
 	ReportFoundItem,
 	getFoundItems,
 	deleteFoundItem,
 	updateFoundItem,
-	getFoundItemById
+	getFoundItemById,
+	getMyFoundItems
 };
 
 export default FoundItemControllers;

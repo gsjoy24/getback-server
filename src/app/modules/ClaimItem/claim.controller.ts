@@ -2,7 +2,9 @@ import { User } from '@prisma/client';
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
+import pick from '../../utils/pick';
 import sendResponse from '../../utils/sendResponse';
+import { claimFilterAbleFields } from './claim.constant';
 import claimServices from './claim.service';
 
 const claimItem = catchAsync(async (req: Request, res: Response) => {
@@ -17,12 +19,28 @@ const claimItem = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getClaims = catchAsync(async (req: Request, res: Response) => {
-	const claims = await claimServices.getClaims();
+	const query = pick(req.query, claimFilterAbleFields);
+	const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+	const { meta, claims } = await claimServices.getClaims(query, options);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,
 		success: true,
 		message: 'Claims retrieved successfully',
+		meta,
+		data: claims
+	});
+});
+
+const getMyClaims = catchAsync(async (req: Request, res: Response) => {
+	const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+	const { meta, claims } = await claimServices.getMyClaims(req.user?.id as string, options);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Claims retrieved successfully',
+		meta,
 		data: claims
 	});
 });
@@ -67,7 +85,8 @@ const ClaimControllers = {
 	getClaims,
 	updateClaim,
 	deleteClaim,
-	updateStatus
+	updateStatus,
+	getMyClaims
 };
 
 export default ClaimControllers;

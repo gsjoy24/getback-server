@@ -3,7 +3,7 @@ import { QueryOptions } from '../../types';
 import prisma from '../../utils/prisma';
 import { lostItemSearchableFields } from './lostItem.constant';
 
-const ReportLostItem = async (reportItem: LostItem, userData: User) => {
+const reportLostItem = async (reportItem: LostItem, userData: User) => {
 	// check if the category exists
 	await prisma.category.findUniqueOrThrow({
 		where: {
@@ -33,7 +33,7 @@ const ReportLostItem = async (reportItem: LostItem, userData: User) => {
 	return newReportItem;
 };
 
-const GetLostItems = async (query: any, options: QueryOptions) => {
+const getLostItems = async (query: any, options: QueryOptions) => {
 	const { searchTerm, ...restQueryData } = query;
 
 	const page: number = Number(options.page) || 1;
@@ -96,7 +96,45 @@ const GetLostItems = async (query: any, options: QueryOptions) => {
 	};
 };
 
-const GetSingleLostItem = async (id: string) => {
+const getMyLostItems = async (user: User, options: QueryOptions) => {
+	const page: number = Number(options.page) || 1;
+	const limit: number = Number(options.limit) || 10;
+	const skip: number = (Number(page) - 1) * limit;
+
+	const sortBy: string = options.sortBy || 'createdAt';
+	const sortOrder: string = options.sortOrder || 'desc';
+
+	const lostItems = await prisma.lostItem.findMany({
+		where: {
+			userId: user.id
+		},
+		skip,
+		take: limit,
+		orderBy: {
+			[sortBy]: sortOrder
+		},
+		include: {
+			category: true
+		}
+	});
+
+	const total = await prisma.lostItem.count({
+		where: {
+			userId: user.id
+		}
+	});
+
+	return {
+		meta: {
+			limit,
+			page,
+			total
+		},
+		lostItems
+	};
+};
+
+const getSingleLostItem = async (id: string) => {
 	const item = await prisma.lostItem.findUniqueOrThrow({
 		where: {
 			id
@@ -116,7 +154,7 @@ const GetSingleLostItem = async (id: string) => {
 	return item;
 };
 
-const DeleteLostItem = async (id: string, user: User) => {
+const deleteLostItem = async (id: string, user: User) => {
 	const item = await prisma.lostItem.findUnique({
 		where: {
 			id
@@ -141,7 +179,7 @@ const DeleteLostItem = async (id: string, user: User) => {
 	return true;
 };
 
-const UpdateLostItem = async (id: string, data: any, user: User) => {
+const updateLostItem = async (id: string, data: any, user: User) => {
 	const item = await prisma.lostItem.findUnique({
 		where: {
 			id
@@ -170,11 +208,12 @@ const UpdateLostItem = async (id: string, data: any, user: User) => {
 };
 
 const LostItemServices = {
-	ReportLostItem,
-	GetLostItems,
-	GetSingleLostItem,
-	UpdateLostItem,
-	DeleteLostItem
+	reportLostItem,
+	getLostItems,
+	getSingleLostItem,
+	updateLostItem,
+	deleteLostItem,
+	getMyLostItems
 };
 
 export default LostItemServices;

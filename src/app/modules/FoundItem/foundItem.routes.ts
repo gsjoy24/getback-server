@@ -11,6 +11,8 @@ router.get('/found-items', FoundItemControllers.getFoundItems);
 
 router.get('/found-items/:id', FoundItemControllers.getFoundItemById);
 
+router.get('/my-found-items', auth(userRoles.ADMIN, userRoles.USER), FoundItemControllers.getMyFoundItems);
+
 router.post(
 	'/found-items',
 	auth(userRoles.ADMIN, userRoles.USER),

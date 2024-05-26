@@ -129,6 +129,7 @@ const getUserProfile = async (userId: string) => {
 			createdAt: 'desc'
 		}
 	});
+
 	const foundItems = await prisma.foundItem.findMany({
 		where: {
 			userId
@@ -148,20 +149,13 @@ const getUserProfile = async (userId: string) => {
 			createdAt: 'desc'
 		}
 	});
+
 	const userProfile = await prisma.userProfile.findUniqueOrThrow({
 		where: {
 			userId
 		},
 		include: {
-			user: {
-				select: {
-					id: true,
-					name: true,
-					email: true,
-					createdAt: true,
-					updatedAt: true
-				}
-			}
+			user: true
 		}
 	});
 	return {

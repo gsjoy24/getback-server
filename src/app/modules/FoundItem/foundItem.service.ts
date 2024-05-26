@@ -33,39 +33,6 @@ const ReportFoundItem = async (reportItem: FoundItem, userData: User) => {
 	return newReportItem;
 };
 
-const deleteFoundItem = async (id: string, user: User) => {
-	const foundItem = await prisma.foundItem.findUniqueOrThrow({
-		where: { id }
-	});
-
-	if (foundItem.userId !== user.id) {
-		throw new Error('You are not authorized to delete this item');
-	}
-
-	await prisma.foundItem.delete({
-		where: { id }
-	});
-
-	return true;
-};
-
-const updateFoundItem = async (id: string, data: any, user: User) => {
-	const foundItem = await prisma.foundItem.findUniqueOrThrow({
-		where: { id }
-	});
-
-	if (foundItem.userId !== user.id && user.role !== 'ADMIN') {
-		throw new Error('You are not authorized to update this item');
-	}
-
-	const updatedItem = await prisma.foundItem.update({
-		where: { id },
-		data
-	});
-
-	return updatedItem;
-};
-
 const getFoundItems = async (query: any, options: QueryOptions) => {
 	const { searchTerm, ...restQueryData } = query;
 
@@ -131,6 +98,45 @@ const getFoundItems = async (query: any, options: QueryOptions) => {
 	};
 };
 
+const getMyFoundItems = async (user: User, options: QueryOptions) => {
+	const page: number = Number(options.page) || 1;
+	const limit: number = Number(options.limit) || 10;
+	const skip: number = (Number(page) - 1) * limit;
+
+	const sortBy: string = options.sortBy || 'createdAt';
+	const sortOrder: string = options.sortOrder || 'desc';
+
+	const foundItems = await prisma.foundItem.findMany({
+		where: {
+			userId: user.id
+		},
+		skip,
+		take: limit,
+		orderBy: {
+			[sortBy]: sortOrder
+		},
+		include: {
+			category: true,
+			claim: true
+		}
+	});
+
+	const total = await prisma.foundItem.count({
+		where: {
+			userId: user.id
+		}
+	});
+
+	return {
+		meta: {
+			limit,
+			page,
+			total
+		},
+		foundItems
+	};
+};
+
 const getFoundItemById = async (id: string) => {
 	const foundItem = await prisma.foundItem.findUnique({
 		where: { id },
@@ -156,11 +162,45 @@ const getFoundItemById = async (id: string) => {
 	return foundItem;
 };
 
+const deleteFoundItem = async (id: string, user: User) => {
+	const foundItem = await prisma.foundItem.findUniqueOrThrow({
+		where: { id }
+	});
+
+	if (foundItem.userId !== user.id) {
+		throw new Error('You are not authorized to delete this item');
+	}
+
+	await prisma.foundItem.delete({
+		where: { id }
+	});
+
+	return true;
+};
+
+const updateFoundItem = async (id: string, data: any, user: User) => {
+	const foundItem = await prisma.foundItem.findUniqueOrThrow({
+		where: { id }
+	});
+
+	if (foundItem.userId !== user.id && user.role !== 'ADMIN') {
+		throw new Error('You are not authorized to update this item');
+	}
+
+	const updatedItem = await prisma.foundItem.update({
+		where: { id },
+		data
+	});
+
+	return updatedItem;
+};
+
 const FoundItemServices = {
 	ReportFoundItem,
 	deleteFoundItem,
 	updateFoundItem,
 	getFoundItems,
-	getFoundItemById
+	getFoundItemById,
+	getMyFoundItems
 };
 export default FoundItemServices;

@@ -1,5 +1,7 @@
-import { Claim, ClaimStatus, User } from '@prisma/client';
+import { Claim, ClaimStatus, Prisma, User } from '@prisma/client';
+import { QueryOptions } from '../../types';
 import prisma from '../../utils/prisma';
+import { claimSearchableFields } from './claim.constant';
 
 const claimItem = async (claimItem: Claim, userData: User) => {
 	// check if the the item exists
@@ -19,26 +21,99 @@ const claimItem = async (claimItem: Claim, userData: User) => {
 	return newClaimItem;
 };
 
-const getClaims = async () => {
-	const claims = await prisma.claim.findMany({
-		include: {
-			foundItem: {
-				include: {
-					user: {
-						select: {
-							id: true,
-							name: true,
-							email: true,
-							createdAt: true,
-							updatedAt: true
-						}
-					},
-					category: true
+const getClaims = async (query: any, options: QueryOptions) => {
+	const { searchTerm, ...restQueryData } = query;
+
+	const page: number = Number(options.page) || 1;
+	const limit: number = Number(options.limit) || 10;
+	const skip: number = (Number(page) - 1) * limit;
+
+	const sortBy: string = options.sortBy || 'createdAt';
+	const sortOrder: string = options.sortOrder || 'desc';
+
+	const conditions: Prisma.ClaimWhereInput[] = [];
+
+	if (searchTerm) {
+		conditions.push({
+			OR: claimSearchableFields.map((field) => ({
+				[field]: { contains: searchTerm, mode: 'insensitive' }
+			}))
+		});
+	}
+
+	if (Object.keys(restQueryData).length) {
+		conditions.push({
+			AND: Object.keys(restQueryData).map((key) => ({
+				[key]: {
+					equals: (restQueryData as any)[key]
 				}
-			}
+			}))
+		});
+	}
+
+	const claims = await prisma.claim.findMany({
+		where: { AND: conditions },
+		skip,
+		take: limit,
+		orderBy: {
+			[sortBy]: sortOrder
+		},
+		include: {
+			user: true,
+			foundItem: true
 		}
 	});
-	return claims;
+
+	const total = await prisma.claim.count({
+		where: { AND: conditions }
+	});
+
+	return {
+		meta: {
+			limit,
+			page,
+			total
+		},
+		claims
+	};
+};
+
+const getMyClaims = async (userId: string, options: QueryOptions) => {
+	const page: number = Number(options.page) || 1;
+	const limit: number = Number(options.limit) || 10;
+	const skip: number = (Number(page) - 1) * limit;
+
+	const sortBy: string = options.sortBy || 'createdAt';
+	const sortOrder: string = options.sortOrder || 'desc';
+
+	const claims = await prisma.claim.findMany({
+		where: {
+			userId
+		},
+		skip,
+		take: limit,
+		orderBy: {
+			[sortBy]: sortOrder
+		},
+		include: {
+			foundItem: true
+		}
+	});
+
+	const total = await prisma.claim.count({
+		where: {
+			userId
+		}
+	});
+
+	return {
+		meta: {
+			limit,
+			page,
+			total
+		},
+		claims
+	};
 };
 
 const updateClaim = async (claimId: string, payload: Claim, user: User) => {
@@ -128,7 +203,8 @@ const claimServices = {
 	getClaims,
 	updateClaim,
 	updateStatus,
-	deleteClaim
+	deleteClaim,
+	getMyClaims
 };
 
 export default claimServices;

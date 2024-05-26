@@ -14,6 +14,8 @@ router.post(
 	ClaimControllers.claimItem
 );
 
+router.get('/my-claims', auth(userRoles.ADMIN, userRoles.USER), ClaimControllers.getMyClaims);
+
 router.get('/claims', auth(userRoles.ADMIN, userRoles.USER), ClaimControllers.getClaims);
 
 router.patch(
