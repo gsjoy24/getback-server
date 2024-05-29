@@ -66,7 +66,14 @@ const getClaims = async (query: any, options: QueryOptions) => {
 			[sortBy]: sortOrder
 		},
 		include: {
-			user: true,
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					phone: true
+				}
+			},
 			foundItem: true
 		}
 	});
@@ -164,7 +171,14 @@ const updateStatus = async (claimId: string, payload: TResponse, user: User) => 
 		},
 		include: {
 			foundItem: true,
-			user: true
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					phone: true
+				}
+			}
 		}
 	});
 
