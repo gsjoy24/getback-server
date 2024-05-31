@@ -72,7 +72,14 @@ const getClaims = (query, options) => __awaiter(void 0, void 0, void 0, function
             [sortBy]: sortOrder
         },
         include: {
-            user: true,
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    phone: true
+                }
+            },
             foundItem: true
         }
     });
@@ -153,7 +160,14 @@ const updateStatus = (claimId, payload, user) => __awaiter(void 0, void 0, void 
         },
         include: {
             foundItem: true,
-            user: true
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    phone: true
+                }
+            }
         }
     });
     if (claim.foundItem.userId !== user.id && user.role !== 'ADMIN') {

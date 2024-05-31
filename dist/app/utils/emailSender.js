@@ -26,8 +26,7 @@ const emailSender = (subject, email, html) => __awaiter(void 0, void 0, void 0, 
     });
     const info = yield transporter.sendMail({
         from: '"Lost And Found" <gour.joy24@gmail.com>',
-        // to: email,
-        to: 'goursaha307@gmail.com',
+        to: email,
         subject,
         html
     });

@@ -85,7 +85,8 @@ const getLostItems = (query, options) => __awaiter(void 0, void 0, void 0, funct
                 select: {
                     id: true,
                     name: true,
-                    email: true
+                    email: true,
+                    phone: true
                 }
             },
             category: true
@@ -146,7 +147,8 @@ const getSingleLostItem = (id) => __awaiter(void 0, void 0, void 0, function* ()
                 select: {
                     id: true,
                     name: true,
-                    email: true
+                    email: true,
+                    phone: true
                 }
             },
             category: true

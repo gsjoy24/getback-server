@@ -152,7 +152,14 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
             userId
         },
         include: {
-            user: true
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    phone: true
+                }
+            }
         }
     });
     return Object.assign(Object.assign({}, userProfile), { lostItems,
