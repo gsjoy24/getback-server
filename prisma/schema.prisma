@@ -95,6 +95,15 @@ model Claim {
   foundItem FoundItem @relation(fields: [foundItemId], references: [id])
 }
 
+model NewsLetterEmails {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("news_letter_emails")
+}
+
 enum ClaimStatus {
   PENDING
   APPROVED
