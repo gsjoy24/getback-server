@@ -7,9 +7,17 @@ import userRoles from '../utils/userRoles';
 const seedAdmin = async () => {
 	const adminData = {
 		name: 'Gour Saha Joy',
+		username: 'gourjoy',
 		email: config.adminEmail,
+		phone: '01700000000',
 		password: config.adminPass as string,
 		role: userRoles.ADMIN
+	};
+
+	const profileData = {
+		image: 'https://i.ibb.co/4KDPMYq/user.jpg',
+		bio: 'Software Engineer',
+		age: 23
 	};
 
 	try {
@@ -23,8 +31,19 @@ const seedAdmin = async () => {
 		const modifiedUserData = { ...adminData, password: hashedPassword };
 
 		if (!findAdmin) {
-			await prisma.user.create({
-				data: modifiedUserData as User
+			await prisma.$transaction(async (trx) => {
+				const user = await trx.user.create({
+					data: modifiedUserData as User,
+					select: {
+						id: true
+					}
+				});
+				await trx.userProfile.create({
+					data: {
+						...profileData,
+						userId: user.id
+					}
+				});
 			});
 		}
 	} catch (error: any) {
