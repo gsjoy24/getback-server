@@ -11,6 +11,9 @@ const createUser = zod_1.z.object({
             message: 'Name must be at least 3 characters!'
         })
             .max(255),
+        username: zod_1.z.string({
+            required_error: 'Username is required!'
+        }),
         email: zod_1.z
             .string({
             required_error: 'Email is required!'
@@ -29,6 +32,13 @@ const createUser = zod_1.z.object({
             message: 'Password must be at most 25 characters!'
         }),
         profile: zod_1.z.object({
+            image: zod_1.z
+                .string({
+                required_error: 'Profile image is required!'
+            })
+                .url({
+                message: 'Invalid profile image URL!'
+            }),
             bio: zod_1.z.string({
                 required_error: 'Bio is required!',
                 invalid_type_error: 'Bio must be a string!'
@@ -65,13 +75,19 @@ const loginUser = zod_1.z.object({
 });
 const updateUserProfile = zod_1.z.object({
     body: zod_1.z.object({
-        bio: zod_1.z.string({
-            required_error: 'Bio is required!',
+        image: zod_1.z
+            .string()
+            .url({
+            message: 'Invalid profile image URL!'
+        })
+            .optional(),
+        bio: zod_1.z
+            .string({
             invalid_type_error: 'Bio must be a string!'
-        }),
+        })
+            .optional(),
         age: zod_1.z
             .number({
-            required_error: 'Age is required!',
             invalid_type_error: 'Age must be a number!'
         })
             .int({
@@ -80,6 +96,7 @@ const updateUserProfile = zod_1.z.object({
             .positive({
             message: 'Age must be a positive number!'
         })
+            .optional()
     })
 });
 const userValidationSchemas = {

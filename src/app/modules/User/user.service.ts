@@ -106,6 +106,7 @@ const loginUser = async (email: string, password: string) => {
 		id: user.id,
 		email: user.email,
 		phone: user.phone,
+		username: user.username,
 		role: user.role
 	};
 	const token = createToken(userData, config.accessSecret, config.accessSecretExp);

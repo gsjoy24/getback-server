@@ -10,6 +10,9 @@ const createUser = z.object({
 				message: 'Name must be at least 3 characters!'
 			})
 			.max(255),
+		username: z.string({
+			required_error: 'Username is required!'
+		}),
 		email: z
 			.string({
 				required_error: 'Email is required!'
@@ -29,6 +32,13 @@ const createUser = z.object({
 			}),
 		profile: z.object(
 			{
+				image: z
+					.string({
+						required_error: 'Profile image is required!'
+					})
+					.url({
+						message: 'Invalid profile image URL!'
+					}),
 				bio: z.string({
 					required_error: 'Bio is required!',
 					invalid_type_error: 'Bio must be a string!'
@@ -69,13 +79,19 @@ const loginUser = z.object({
 
 const updateUserProfile = z.object({
 	body: z.object({
-		bio: z.string({
-			required_error: 'Bio is required!',
-			invalid_type_error: 'Bio must be a string!'
-		}),
+		image: z
+			.string()
+			.url({
+				message: 'Invalid profile image URL!'
+			})
+			.optional(),
+		bio: z
+			.string({
+				invalid_type_error: 'Bio must be a string!'
+			})
+			.optional(),
 		age: z
 			.number({
-				required_error: 'Age is required!',
 				invalid_type_error: 'Age must be a number!'
 			})
 			.int({
@@ -84,8 +100,10 @@ const updateUserProfile = z.object({
 			.positive({
 				message: 'Age must be a positive number!'
 			})
+			.optional()
 	})
 });
+
 const userValidationSchemas = {
 	createUser,
 	loginUser,

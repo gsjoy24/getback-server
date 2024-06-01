@@ -112,6 +112,7 @@ const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, functio
         id: user.id,
         email: user.email,
         phone: user.phone,
+        username: user.username,
         role: user.role
     };
     const token = (0, createToken_1.default)(userData, config_1.default.accessSecret, config_1.default.accessSecretExp);

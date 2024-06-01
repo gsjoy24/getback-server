@@ -8,17 +8,16 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String @unique
-  phone    String @unique
-  password String
-  role     String @default("USER")
-  status   String @default("ACTIVE")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id          String       @id @default(uuid())
+  name        String
+  username    String       @unique
+  email       String       @unique
+  phone       String       @unique
+  password    String
+  role        String       @default("USER")
+  status      String       @default("ACTIVE")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
   userProfile UserProfile?
   foundedItem FoundItem[]
   claim       Claim[]
@@ -29,6 +28,7 @@ model UserProfile {
   id        String   @id @default(uuid())
   userId    String   @unique
   bio       String
+  image     String   @default("https://i.ibb.co/4KDPMYq/user.jpg")
   age       Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
