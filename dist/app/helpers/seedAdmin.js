@@ -19,9 +19,16 @@ const userRoles_1 = __importDefault(require("../utils/userRoles"));
 const seedAdmin = () => __awaiter(void 0, void 0, void 0, function* () {
     const adminData = {
         name: 'Gour Saha Joy',
+        username: 'gourjoy',
         email: config_1.default.adminEmail,
+        phone: '01700000000',
         password: config_1.default.adminPass,
         role: userRoles_1.default.ADMIN
+    };
+    const profileData = {
+        image: 'https://i.ibb.co/4KDPMYq/user.jpg',
+        bio: 'Software Engineer',
+        age: 23
     };
     try {
         const findAdmin = yield prisma_1.default.user.findUnique({
@@ -33,9 +40,17 @@ const seedAdmin = () => __awaiter(void 0, void 0, void 0, function* () {
         const hashedPassword = yield bcrypt_1.default.hash(adminData === null || adminData === void 0 ? void 0 : adminData.password, config_1.default.pass_salt);
         const modifiedUserData = Object.assign(Object.assign({}, adminData), { password: hashedPassword });
         if (!findAdmin) {
-            yield prisma_1.default.user.create({
-                data: modifiedUserData
-            });
+            yield prisma_1.default.$transaction((trx) => __awaiter(void 0, void 0, void 0, function* () {
+                const user = yield trx.user.create({
+                    data: modifiedUserData,
+                    select: {
+                        id: true
+                    }
+                });
+                yield trx.userProfile.create({
+                    data: Object.assign(Object.assign({}, profileData), { userId: user.id })
+                });
+            }));
         }
     }
     catch (error) {

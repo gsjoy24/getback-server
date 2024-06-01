@@ -23,6 +23,7 @@ const createUser = async (userData: User & { profile: UserProfile }) => {
 				updatedAt: true
 			}
 		});
+
 		const userProfile = await trx.userProfile.create({
 			data: {
 				...profile,
