@@ -21,6 +21,16 @@ const createUser = zod_1.z.object({
             .email({
             message: 'Invalid email address!'
         }),
+        phone: zod_1.z
+            .string({
+            required_error: 'Phone number is required!'
+        })
+            .min(11, {
+            message: 'Phone number must be at least 10 characters!'
+        })
+            .max(14, {
+            message: 'Phone number must be at most 15 characters!'
+        }),
         password: zod_1.z
             .string({
             required_error: 'Password is required!'
