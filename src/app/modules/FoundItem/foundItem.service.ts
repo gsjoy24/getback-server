@@ -43,7 +43,11 @@ const getFoundItems = async (query: any, options: QueryOptions) => {
 	const sortBy: string = options.sortBy || 'createdAt';
 	const sortOrder: string = options.sortOrder || 'desc';
 
-	const conditions: Prisma.FoundItemWhereInput[] = [];
+	const conditions: Prisma.FoundItemWhereInput[] = [
+		{
+			isReturned: false
+		}
+	];
 
 	if (searchTerm) {
 		conditions.push({
@@ -171,8 +175,15 @@ const deleteFoundItem = async (id: string, user: User) => {
 		throw new Error('You are not authorized to delete this item');
 	}
 
-	await prisma.foundItem.delete({
-		where: { id }
+	await prisma.$transaction(async (tx) => {
+		await tx.claim.deleteMany({
+			where: {
+				foundItemId: id
+			}
+		});
+		await tx.foundItem.delete({
+			where: { id }
+		});
 	});
 
 	return true;

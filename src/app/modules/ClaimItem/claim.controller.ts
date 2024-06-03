@@ -13,7 +13,7 @@ const claimItem = catchAsync(async (req: Request, res: Response) => {
 	sendResponse(res, {
 		statusCode: httpStatus.CREATED,
 		success: true,
-		message: 'Claim created successfully',
+		message: 'Item claimed successfully!',
 		data: claimItem
 	});
 });

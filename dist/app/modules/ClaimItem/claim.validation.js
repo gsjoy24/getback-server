@@ -6,6 +6,15 @@ const createClaimSchema = zod_1.z.object({
         foundItemId: zod_1.z.string({
             required_error: 'Found item id is required'
         }),
+        pictures: zod_1.z.array(zod_1.z.string(), {
+            required_error: 'Pictures are required'
+        }),
+        driveUrl: zod_1.z
+            .string()
+            .url({
+            message: 'Invalid drive url'
+        })
+            .optional(),
         description: zod_1.z.string({
             required_error: 'Distinguishing features is required'
         }),
@@ -16,6 +25,13 @@ const createClaimSchema = zod_1.z.object({
 });
 const updateClaimSchema = zod_1.z.object({
     body: zod_1.z.object({
+        pictures: zod_1.z.array(zod_1.z.string()).optional(),
+        driveUrl: zod_1.z
+            .string()
+            .url({
+            message: 'Invalid drive url'
+        })
+            .optional(),
         description: zod_1.z.string().optional(),
         lostDate: zod_1.z.string().optional()
     })

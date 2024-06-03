@@ -43,7 +43,11 @@ const getLostItems = async (query: any, options: QueryOptions) => {
 	const sortBy: string = options.sortBy || 'createdAt';
 	const sortOrder: string = options.sortOrder || 'desc';
 
-	const conditions: Prisma.LostItemWhereInput[] = [];
+	const conditions: Prisma.LostItemWhereInput[] = [
+		{
+			isFound: false
+		}
+	];
 
 	if (searchTerm) {
 		conditions.push({

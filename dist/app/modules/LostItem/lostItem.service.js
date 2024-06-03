@@ -56,7 +56,11 @@ const getLostItems = (query, options) => __awaiter(void 0, void 0, void 0, funct
     const skip = (Number(page) - 1) * limit;
     const sortBy = options.sortBy || 'createdAt';
     const sortOrder = options.sortOrder || 'desc';
-    const conditions = [];
+    const conditions = [
+        {
+            isFound: false
+        }
+    ];
     if (searchTerm) {
         conditions.push({
             OR: lostItem_constant_1.lostItemSearchableFields.map((field) => ({

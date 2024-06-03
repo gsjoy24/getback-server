@@ -56,7 +56,11 @@ const getFoundItems = (query, options) => __awaiter(void 0, void 0, void 0, func
     const skip = (Number(page) - 1) * limit;
     const sortBy = options.sortBy || 'createdAt';
     const sortOrder = options.sortOrder || 'desc';
-    const conditions = [];
+    const conditions = [
+        {
+            isReturned: false
+        }
+    ];
     if (searchTerm) {
         conditions.push({
             OR: foundItem_constant_1.foundItemSearchableFields.map((field) => ({
@@ -168,9 +172,16 @@ const deleteFoundItem = (id, user) => __awaiter(void 0, void 0, void 0, function
     if (foundItem.userId !== user.id) {
         throw new Error('You are not authorized to delete this item');
     }
-    yield prisma_1.default.foundItem.delete({
-        where: { id }
-    });
+    yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        yield tx.claim.deleteMany({
+            where: {
+                foundItemId: id
+            }
+        });
+        yield tx.foundItem.delete({
+            where: { id }
+        });
+    }));
     return true;
 });
 const updateFoundItem = (id, data, user) => __awaiter(void 0, void 0, void 0, function* () {

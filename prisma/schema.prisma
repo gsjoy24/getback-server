@@ -87,6 +87,8 @@ model Claim {
   response    String      @default("Waiting for response")
   status      ClaimStatus @default(PENDING)
   description String
+  pictures    String[]
+  driveUrl    String?
   lostDate    DateTime
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
