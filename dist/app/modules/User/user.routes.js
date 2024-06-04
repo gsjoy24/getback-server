@@ -15,6 +15,7 @@ router.get('/my-profile', (0, auth_1.default)(userRoles_1.default.ADMIN, userRol
 router.post('/register', (0, validateRequest_1.default)(user_validation_1.default.createUser), user_controller_1.default.createUser);
 router.get('/all', (0, auth_1.default)(userRoles_1.default.ADMIN), user_controller_1.default.getAllUsers);
 router.post('/login', (0, validateRequest_1.default)(user_validation_1.default.loginUser), user_controller_1.default.loginUser);
+router.post('/logout', user_controller_1.default.logOutUser);
 router.put('/my-profile', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), (0, validateRequest_1.default)(user_validation_1.default.updateUserProfile), user_controller_1.default.updateUserProfile);
 router.put('/toggle-user-role/:id', (0, auth_1.default)(userRoles_1.default.ADMIN), user_controller_1.default.toggleUserRole);
 router.put('/toggle-user-status/:id', (0, auth_1.default)(userRoles_1.default.ADMIN), user_controller_1.default.toggleUserStatus);

@@ -14,6 +14,8 @@ router.get('/all', auth(userRoles.ADMIN), UserControllers.getAllUsers);
 
 router.post('/login', validateRequest(userValidationSchemas.loginUser), UserControllers.loginUser);
 
+router.post('/logout', UserControllers.logOutUser);
+
 router.put(
 	'/my-profile',
 	auth(userRoles.ADMIN, userRoles.USER),

@@ -116,9 +116,7 @@ const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, functio
         role: user.role
     };
     const token = (0, createToken_1.default)(userData, config_1.default.accessSecret, config_1.default.accessSecretExp);
-    const refreshToken = (0, createToken_1.default)(userData, config_1.default.refreshSecret, config_1.default.refreshSecretExp);
-    return Object.assign(Object.assign({ name: user.name }, userData), { token,
-        refreshToken });
+    return Object.assign(Object.assign({ name: user.name }, userData), { token });
 });
 const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const lostItems = yield prisma_1.default.lostItem.findMany({

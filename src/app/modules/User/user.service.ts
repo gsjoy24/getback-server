@@ -111,13 +111,11 @@ const loginUser = async (email: string, password: string) => {
 		role: user.role
 	};
 	const token = createToken(userData, config.accessSecret, config.accessSecretExp);
-	const refreshToken = createToken(userData, config.refreshSecret, config.refreshSecretExp);
 
 	return {
 		name: user.name,
 		...userData,
-		token,
-		refreshToken
+		token
 	};
 };
 

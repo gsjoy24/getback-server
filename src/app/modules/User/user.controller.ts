@@ -31,18 +31,29 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {
 	const { email, password } = req.body;
-	const { refreshToken, ...restData } = await UserServices.loginUser(email, password);
+	const result = await UserServices.loginUser(email, password);
 
-	res.cookie('refreshToken', refreshToken, {
+	res.cookie('accessToken', result.token, {
 		httpOnly: true,
-		secure: false
+		secure: false,
+		sameSite: 'none',
+		maxAge: 1000 * 60 * 60 * 24 * 365
 	});
 
 	sendResponse(res, {
 		statusCode: httpStatus.CREATED,
 		success: true,
 		message: 'User logged in successfully',
-		data: restData
+		data: result
+	});
+});
+
+const logOutUser = catchAsync(async (req: Request, res: Response) => {
+	res.clearCookie('accessToken');
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'User logged out successfully'
 	});
 });
 
@@ -90,6 +101,7 @@ const UserControllers = {
 	createUser,
 	getAllUsers,
 	loginUser,
+	logOutUser,
 	getUserProfile,
 	updateUserProfile,
 	toggleUserRole,
