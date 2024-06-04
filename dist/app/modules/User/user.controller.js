@@ -44,7 +44,9 @@ const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
     const result = yield user_service_1.default.loginUser(email, password);
     res.cookie('accessToken', result.token, {
         httpOnly: true,
-        secure: false
+        secure: false,
+        sameSite: 'none',
+        maxAge: 1000 * 60 * 60 * 24 * 365
     });
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.CREATED,

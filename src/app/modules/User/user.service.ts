@@ -124,7 +124,7 @@ const getUserProfile = async (userId: string) => {
 		where: {
 			userId
 		},
-		take: 5,
+		take: 3,
 		orderBy: {
 			createdAt: 'desc'
 		}
@@ -134,7 +134,7 @@ const getUserProfile = async (userId: string) => {
 		where: {
 			userId
 		},
-		take: 5,
+		take: 3,
 		orderBy: {
 			createdAt: 'desc'
 		}
@@ -144,7 +144,7 @@ const getUserProfile = async (userId: string) => {
 		where: {
 			userId
 		},
-		take: 5,
+		take: 3,
 		orderBy: {
 			createdAt: 'desc'
 		}
@@ -160,7 +160,9 @@ const getUserProfile = async (userId: string) => {
 					id: true,
 					name: true,
 					email: true,
-					phone: true
+					phone: true,
+					createdAt: true,
+					updatedAt: true
 				}
 			}
 		}

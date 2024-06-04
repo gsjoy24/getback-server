@@ -123,7 +123,7 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
         where: {
             userId
         },
-        take: 5,
+        take: 3,
         orderBy: {
             createdAt: 'desc'
         }
@@ -132,7 +132,7 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
         where: {
             userId
         },
-        take: 5,
+        take: 3,
         orderBy: {
             createdAt: 'desc'
         }
@@ -141,7 +141,7 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
         where: {
             userId
         },
-        take: 5,
+        take: 3,
         orderBy: {
             createdAt: 'desc'
         }
@@ -156,7 +156,9 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
                     id: true,
                     name: true,
                     email: true,
-                    phone: true
+                    phone: true,
+                    createdAt: true,
+                    updatedAt: true
                 }
             }
         }
