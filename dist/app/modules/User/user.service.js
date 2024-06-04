@@ -139,7 +139,7 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
         where: {
             userId
         },
-        take: 3,
+        take: 4,
         orderBy: {
             createdAt: 'desc'
         }
@@ -148,7 +148,7 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
         where: {
             userId
         },
-        take: 3,
+        take: 4,
         orderBy: {
             createdAt: 'desc'
         }
@@ -157,9 +157,25 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
         where: {
             userId
         },
-        take: 3,
+        take: 4,
         orderBy: {
             createdAt: 'desc'
+        }
+    });
+    // all counts
+    const foundItemsCount = yield prisma_1.default.foundItem.count({
+        where: {
+            userId
+        }
+    });
+    const claimedItemsCount = yield prisma_1.default.claim.count({
+        where: {
+            userId
+        }
+    });
+    const lostItemsCount = yield prisma_1.default.lostItem.count({
+        where: {
+            userId
         }
     });
     const userProfile = yield prisma_1.default.userProfile.findUniqueOrThrow({
@@ -182,7 +198,11 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
     });
     return Object.assign(Object.assign({}, userProfile), { lostItems,
         foundItems,
-        claimedItems });
+        claimedItems, counts: {
+            lostItems: lostItemsCount,
+            foundItems: foundItemsCount,
+            claimedItems: claimedItemsCount
+        } });
 });
 const updateUserProfile = (userId, profileData) => __awaiter(void 0, void 0, void 0, function* () {
     const userProfile = yield prisma_1.default.userProfile.update({
