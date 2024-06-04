@@ -11,12 +11,26 @@ type TResponse = {
 };
 
 const claimItem = async (claimItem: Claim, userData: User) => {
+	console.log(claimItem, userData);
 	// check if the the item exists
 	await prisma.foundItem.findUniqueOrThrow({
 		where: {
 			id: claimItem.foundItemId
 		}
 	});
+
+	// check if the user has already claimed the item
+
+	const existingClaim = await prisma.claim.findFirst({
+		where: {
+			userId: userData.id,
+			foundItemId: claimItem.foundItemId
+		}
+	});
+
+	if (existingClaim) {
+		throw new Error('You have already claimed this item');
+	}
 
 	const newClaimItem = await prisma.claim.create({
 		data: {

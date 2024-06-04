@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ZodIssue } from 'zod';
 const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
 	const modifiedError: any = {
-		status: false,
+		success: false,
 		message: err?.message || 'Something went wrong!',
 		errorDetails: err
 	};

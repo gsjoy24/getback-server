@@ -4,7 +4,7 @@ const client_1 = require("@prisma/client");
 const globalErrorHandler = (err, req, res, next) => {
     var _a, _b;
     const modifiedError = {
-        status: false,
+        success: false,
         message: (err === null || err === void 0 ? void 0 : err.message) || 'Something went wrong!',
         errorDetails: err
     };

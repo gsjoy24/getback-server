@@ -29,12 +29,23 @@ const emailTemp_1 = __importDefault(require("../../utils/emailTemp"));
 const prisma_1 = __importDefault(require("../../utils/prisma"));
 const claim_constant_1 = require("./claim.constant");
 const claimItem = (claimItem, userData) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(claimItem, userData);
     // check if the the item exists
     yield prisma_1.default.foundItem.findUniqueOrThrow({
         where: {
             id: claimItem.foundItemId
         }
     });
+    // check if the user has already claimed the item
+    const existingClaim = yield prisma_1.default.claim.findFirst({
+        where: {
+            userId: userData.id,
+            foundItemId: claimItem.foundItemId
+        }
+    });
+    if (existingClaim) {
+        throw new Error('You have already claimed this item');
+    }
     const newClaimItem = yield prisma_1.default.claim.create({
         data: Object.assign(Object.assign({}, claimItem), { userId: userData.id })
     });
