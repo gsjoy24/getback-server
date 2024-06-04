@@ -30,6 +30,22 @@ const prisma_1 = __importDefault(require("../../utils/prisma"));
 const user_constant_1 = require("./user.constant");
 const createUser = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     // i am separating the role to prevent create a admin from here. the admin will get created from the seed file or from the admin panel
+    const checkUserName = yield prisma_1.default.user.findFirst({
+        where: {
+            username: userData.username
+        }
+    });
+    if (checkUserName) {
+        throw new Error('Username already exists!');
+    }
+    const checkEmail = yield prisma_1.default.user.findFirst({
+        where: {
+            email: userData.email
+        }
+    });
+    if (checkEmail) {
+        throw new Error('This email is already registered!');
+    }
     const { role, password, profile } = userData, restUserData = __rest(userData, ["role", "password", "profile"]);
     const hashedPassword = yield bcrypt_1.default.hash(password, config_1.default.pass_salt);
     const modifiedUserData = Object.assign(Object.assign({}, restUserData), { password: hashedPassword });
@@ -155,6 +171,7 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
                 select: {
                     id: true,
                     name: true,
+                    username: true,
                     email: true,
                     phone: true,
                     createdAt: true,

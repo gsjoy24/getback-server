@@ -8,6 +8,26 @@ import { userSearchableFields } from './user.constant';
 
 const createUser = async (userData: User & { profile: UserProfile }) => {
 	// i am separating the role to prevent create a admin from here. the admin will get created from the seed file or from the admin panel
+	const checkUserName = await prisma.user.findFirst({
+		where: {
+			username: userData.username
+		}
+	});
+
+	if (checkUserName) {
+		throw new Error('Username already exists!');
+	}
+
+	const checkEmail = await prisma.user.findFirst({
+		where: {
+			email: userData.email
+		}
+	});
+
+	if (checkEmail) {
+		throw new Error('This email is already registered!');
+	}
+
 	const { role, password, profile, ...restUserData } = userData;
 	const hashedPassword = await bcrypt.hash(password, config.pass_salt);
 	const modifiedUserData = { ...restUserData, password: hashedPassword };
@@ -159,6 +179,7 @@ const getUserProfile = async (userId: string) => {
 				select: {
 					id: true,
 					name: true,
+					username: true,
 					email: true,
 					phone: true,
 					createdAt: true,
