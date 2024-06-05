@@ -32,6 +32,18 @@ const getClaims = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const getClaim = catchAsync(async (req: Request, res: Response) => {
+	const { claimId } = req.params;
+	const claim = await claimServices.getClaim(claimId);
+
+	sendResponse(res, {
+		statusCode: httpStatus.OK,
+		success: true,
+		message: 'Claim retrieved successfully',
+		data: claim
+	});
+});
+
 const getMyClaims = catchAsync(async (req: Request, res: Response) => {
 	const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
 	const { meta, claims } = await claimServices.getMyClaims(req.user?.id as string, options);
@@ -83,6 +95,7 @@ const deleteClaim = catchAsync(async (req: Request, res: Response) => {
 const ClaimControllers = {
 	claimItem,
 	getClaims,
+	getClaim,
 	updateClaim,
 	deleteClaim,
 	updateStatus,

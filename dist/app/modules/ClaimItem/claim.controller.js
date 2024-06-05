@@ -39,6 +39,16 @@ const getClaims = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
         data: claims
     });
 }));
+const getClaim = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { claimId } = req.params;
+    const claim = yield claim_service_1.default.getClaim(claimId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: 'Claim retrieved successfully',
+        data: claim
+    });
+}));
 const getMyClaims = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
@@ -83,6 +93,7 @@ const deleteClaim = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
 const ClaimControllers = {
     claimItem,
     getClaims,
+    getClaim,
     updateClaim,
     deleteClaim,
     updateStatus,

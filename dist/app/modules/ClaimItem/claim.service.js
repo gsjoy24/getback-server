@@ -106,6 +106,24 @@ const getClaims = (query, options) => __awaiter(void 0, void 0, void 0, function
         claims
     };
 });
+const getClaim = (claimId) => __awaiter(void 0, void 0, void 0, function* () {
+    return prisma_1.default.claim.findUniqueOrThrow({
+        where: {
+            id: claimId
+        },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    phone: true
+                }
+            },
+            foundItem: true
+        }
+    });
+});
 const getMyClaims = (userId, options) => __awaiter(void 0, void 0, void 0, function* () {
     const page = Number(options.page) || 1;
     const limit = Number(options.limit) || 10;
@@ -214,6 +232,7 @@ const deleteClaim = (claimId, userData) => __awaiter(void 0, void 0, void 0, fun
 const claimServices = {
     claimItem,
     getClaims,
+    getClaim,
     updateClaim,
     updateStatus,
     deleteClaim,

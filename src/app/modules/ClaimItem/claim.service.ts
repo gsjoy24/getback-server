@@ -106,6 +106,25 @@ const getClaims = async (query: any, options: QueryOptions) => {
 	};
 };
 
+const getClaim = async (claimId: string) => {
+	return prisma.claim.findUniqueOrThrow({
+		where: {
+			id: claimId
+		},
+		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					phone: true
+				}
+			},
+			foundItem: true
+		}
+	});
+};
+
 const getMyClaims = async (userId: string, options: QueryOptions) => {
 	const page: number = Number(options.page) || 1;
 	const limit: number = Number(options.limit) || 10;
@@ -239,6 +258,7 @@ const deleteClaim = async (claimId: string, userData: User) => {
 const claimServices = {
 	claimItem,
 	getClaims,
+	getClaim,
 	updateClaim,
 	updateStatus,
 	deleteClaim,
