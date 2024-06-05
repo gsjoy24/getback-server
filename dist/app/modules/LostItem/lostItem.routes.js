@@ -14,7 +14,7 @@ router.post('/lost-items', (0, auth_1.default)(userRoles_1.default.ADMIN, userRo
 router.get('/lost-items', lostItem_controller_1.default.getLostItems);
 router.get('/lost-items/:lostItemId', lostItem_controller_1.default.getSingleLostItem);
 router.get('/my-lost-items', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), lostItem_controller_1.default.getMyLostItems);
-router.patch('/lost-items/:lostItemId', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), (0, validateRequest_1.default)(lostItem_validation_1.default.UpdateLostItem), lostItem_controller_1.default.updateLostItem);
+router.put('/lost-items/:lostItemId', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), (0, validateRequest_1.default)(lostItem_validation_1.default.UpdateLostItem), lostItem_controller_1.default.updateLostItem);
 router.delete('/lost-items/:lostItemId', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), lostItem_controller_1.default.deleteLostItem);
 const LostItemRoutes = router;
 exports.default = LostItemRoutes;

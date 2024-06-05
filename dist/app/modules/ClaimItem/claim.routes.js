@@ -14,8 +14,8 @@ router.post('/claims', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_
 router.get('/claims', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), claim_controller_1.default.getClaims);
 router.get('/claims/:claimId', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), claim_controller_1.default.getClaim);
 router.get('/my-claims', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), claim_controller_1.default.getMyClaims);
-router.patch('/claims/:claimId', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), (0, validateRequest_1.default)(claim_validation_1.default.updateClaimSchema), claim_controller_1.default.updateClaim);
-router.patch('/claims/status/:claimId', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), (0, validateRequest_1.default)(claim_validation_1.default.updateClaimStatus), claim_controller_1.default.updateStatus);
+router.put('/claims/:claimId', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), (0, validateRequest_1.default)(claim_validation_1.default.updateClaimSchema), claim_controller_1.default.updateClaim);
+router.put('/claims/status/:claimId', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), (0, validateRequest_1.default)(claim_validation_1.default.updateClaimStatus), claim_controller_1.default.updateStatus);
 router.delete('/claims/:claimId', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), claim_controller_1.default.deleteClaim);
 const ClaimRoutes = router;
 exports.default = ClaimRoutes;

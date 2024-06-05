@@ -20,14 +20,14 @@ router.get('/claims/:claimId', auth(userRoles.ADMIN, userRoles.USER), ClaimContr
 
 router.get('/my-claims', auth(userRoles.ADMIN, userRoles.USER), ClaimControllers.getMyClaims);
 
-router.patch(
+router.put(
 	'/claims/:claimId',
 	auth(userRoles.ADMIN, userRoles.USER),
 	validateRequest(ClaimValidations.updateClaimSchema),
 	ClaimControllers.updateClaim
 );
 
-router.patch(
+router.put(
 	'/claims/status/:claimId',
 	auth(userRoles.ADMIN, userRoles.USER),
 	validateRequest(ClaimValidations.updateClaimStatus),

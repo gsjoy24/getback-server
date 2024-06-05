@@ -20,7 +20,7 @@ router.get('/lost-items/:lostItemId', LostItemControllers.getSingleLostItem);
 
 router.get('/my-lost-items', auth(userRoles.ADMIN, userRoles.USER), LostItemControllers.getMyLostItems);
 
-router.patch(
+router.put(
 	'/lost-items/:lostItemId',
 	auth(userRoles.ADMIN, userRoles.USER),
 	validateRequest(LostValidations.UpdateLostItem),
