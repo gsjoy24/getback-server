@@ -7,7 +7,12 @@ import router from './app/routes';
 
 const app: Application = express();
 
-app.use(cors());
+app.use(
+	cors({
+		origin: ['http://localhost:3000', 'https://lost-and-found1.vercel.app/'],
+		credentials: true
+	})
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
