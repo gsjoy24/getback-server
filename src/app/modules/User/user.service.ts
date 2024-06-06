@@ -1,8 +1,8 @@
-import { LostItem, Prisma, User, UserProfile } from '@prisma/client';
+import { Prisma, User, UserProfile } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 import { QueryOptions } from '../../types';
-import createToken from '../../utils/createToken';
+
 import prisma from '../../utils/prisma';
 import { userSearchableFields } from './user.constant';
 
@@ -91,6 +91,18 @@ const getAllUsers = async (query: any, options: QueryOptions) => {
 		take: limit,
 		orderBy: {
 			[sortBy]: sortOrder
+		},
+		select: {
+			id: true,
+			name: true,
+			username: true,
+			email: true,
+			phone: true,
+			role: true,
+			status: true,
+			createdAt: true,
+			updatedAt: true,
+			userProfile: true
 		}
 	});
 
@@ -105,37 +117,6 @@ const getAllUsers = async (query: any, options: QueryOptions) => {
 			total
 		},
 		users
-	};
-};
-
-const loginUser = async (email: string, password: string) => {
-	const user = await prisma.user.findUniqueOrThrow({
-		where: {
-			email
-		}
-	});
-
-	if (user.status === 'BLOCKED') {
-		throw new Error('Your account is suspended!');
-	}
-
-	const isPasswordMatch = await bcrypt.compare(password, user.password);
-	if (!isPasswordMatch) {
-		throw new Error('Invalid password');
-	}
-	const userData = {
-		id: user.id,
-		email: user.email,
-		phone: user.phone,
-		username: user.username,
-		role: user.role
-	};
-	const token = createToken(userData, config.accessSecret, config.accessSecretExp);
-
-	return {
-		name: user.name,
-		...userData,
-		token
 	};
 };
 
@@ -239,49 +220,10 @@ const updateUserProfile = async (userId: string, profileData: UserProfile) => {
 	return userProfile;
 };
 
-const toggleUserRole = async (userId: string) => {
-	const user = await prisma.user.findUniqueOrThrow({
-		where: {
-			id: userId
-		}
-	});
-
-	const result = await prisma.user.update({
-		where: {
-			id: userId
-		},
-		data: {
-			role: user.role === 'USER' ? 'ADMIN' : 'USER'
-		}
-	});
-	return result;
-};
-
-const toggleUserStatus = async (userId: string) => {
-	const user = await prisma.user.findUniqueOrThrow({
-		where: {
-			id: userId
-		}
-	});
-
-	const result = await prisma.user.update({
-		where: {
-			id: userId
-		},
-		data: {
-			status: user.status === 'ACTIVE' ? 'BLOCKED' : 'ACTIVE'
-		}
-	});
-	return result;
-};
-
 const UserServices = {
 	createUser,
-	loginUser,
 	getUserProfile,
 	updateUserProfile,
-	toggleUserRole,
-	toggleUserStatus,
 	getAllUsers
 };
 

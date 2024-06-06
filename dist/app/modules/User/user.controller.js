@@ -39,30 +39,6 @@ const getAllUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: users
     });
 }));
-const loginUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
-    const result = yield user_service_1.default.loginUser(email, password);
-    res.cookie('accessToken', result.token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'none',
-        maxAge: 1000 * 60 * 60 * 24 * 365
-    });
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.CREATED,
-        success: true,
-        message: 'User logged in successfully',
-        data: result
-    });
-}));
-const logOutUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.clearCookie('accessToken');
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.OK,
-        success: true,
-        message: 'User logged out successfully'
-    });
-}));
 const getUserProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const profile = yield user_service_1.default.getUserProfile((_a = req.user) === null || _a === void 0 ? void 0 : _a.id);
@@ -83,32 +59,10 @@ const updateUserProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void
         data: profile
     });
 }));
-const toggleUserRole = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_service_1.default.toggleUserRole(req.params.id);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.CREATED,
-        success: true,
-        message: 'User role updated successfully',
-        data: user
-    });
-}));
-const toggleUserStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_service_1.default.toggleUserStatus(req.params.id);
-    (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.CREATED,
-        success: true,
-        message: 'User status updated successfully',
-        data: user
-    });
-}));
 const UserControllers = {
     createUser,
     getAllUsers,
-    loginUser,
-    logOutUser,
     getUserProfile,
-    updateUserProfile,
-    toggleUserRole,
-    toggleUserStatus
+    updateUserProfile
 };
 exports.default = UserControllers;

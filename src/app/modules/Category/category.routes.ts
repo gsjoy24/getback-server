@@ -7,23 +7,23 @@ import CategoryValidation from './category.validation';
 
 const router = express.Router();
 
-router.get('/categories', CategoryControllers.getCategories);
+router.get('/', CategoryControllers.getCategories);
 
 router.post(
-	'/categories',
+	'/',
 	validateRequest(CategoryValidation.createOrUpdateCategory),
 	auth(userRoles.ADMIN),
 	CategoryControllers.createCategory
 );
 
 router.put(
-	'/categories/:id',
+	'/:id',
 	validateRequest(CategoryValidation.createOrUpdateCategory),
 	auth(userRoles.ADMIN),
 	CategoryControllers.updateCategory
 );
 
-router.delete('/categories/:id', auth(userRoles.ADMIN), CategoryControllers.deleteCategory);
+router.delete('/:id', auth(userRoles.ADMIN), CategoryControllers.deleteCategory);
 
 const CategoryRoutes = router;
 export default CategoryRoutes;

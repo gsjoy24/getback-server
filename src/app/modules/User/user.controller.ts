@@ -29,34 +29,6 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
-const loginUser = catchAsync(async (req: Request, res: Response) => {
-	const { email, password } = req.body;
-	const result = await UserServices.loginUser(email, password);
-
-	res.cookie('accessToken', result.token, {
-		httpOnly: true,
-		secure: false,
-		sameSite: 'none',
-		maxAge: 1000 * 60 * 60 * 24 * 365
-	});
-
-	sendResponse(res, {
-		statusCode: httpStatus.CREATED,
-		success: true,
-		message: 'User logged in successfully',
-		data: result
-	});
-});
-
-const logOutUser = catchAsync(async (req: Request, res: Response) => {
-	res.clearCookie('accessToken');
-	sendResponse(res, {
-		statusCode: httpStatus.OK,
-		success: true,
-		message: 'User logged out successfully'
-	});
-});
-
 const getUserProfile = catchAsync(async (req: Request, res: Response) => {
 	const profile = await UserServices.getUserProfile(req.user?.id as string);
 	sendResponse(res, {
@@ -77,35 +49,11 @@ const updateUserProfile = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
-const toggleUserRole = catchAsync(async (req: Request, res: Response) => {
-	const user = await UserServices.toggleUserRole(req.params.id);
-	sendResponse(res, {
-		statusCode: httpStatus.CREATED,
-		success: true,
-		message: 'User role updated successfully',
-		data: user
-	});
-});
-
-const toggleUserStatus = catchAsync(async (req: Request, res: Response) => {
-	const user = await UserServices.toggleUserStatus(req.params.id);
-	sendResponse(res, {
-		statusCode: httpStatus.CREATED,
-		success: true,
-		message: 'User status updated successfully',
-		data: user
-	});
-});
-
 const UserControllers = {
 	createUser,
 	getAllUsers,
-	loginUser,
-	logOutUser,
 	getUserProfile,
-	updateUserProfile,
-	toggleUserRole,
-	toggleUserStatus
+	updateUserProfile
 };
 
 export default UserControllers;

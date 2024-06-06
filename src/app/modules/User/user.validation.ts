@@ -72,21 +72,6 @@ const createUser = z.object({
 	})
 });
 
-const loginUser = z.object({
-	body: z.object({
-		email: z
-			.string({
-				required_error: 'Email is required!'
-			})
-			.email({
-				message: 'Invalid email address!'
-			}),
-		password: z.string({
-			required_error: 'Password is required!'
-		})
-	})
-});
-
 const updateUserProfile = z.object({
 	body: z.object({
 		image: z
@@ -116,7 +101,6 @@ const updateUserProfile = z.object({
 
 const userValidationSchemas = {
 	createUser,
-	loginUser,
 	updateUserProfile
 };
 

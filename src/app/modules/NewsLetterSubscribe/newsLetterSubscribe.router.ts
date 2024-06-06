@@ -18,5 +18,4 @@ router.delete(
 );
 
 const NewsLetterSubscribeRouter = router;
-
 export default NewsLetterSubscribeRouter;

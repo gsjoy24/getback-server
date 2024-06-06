@@ -69,20 +69,6 @@ const createUser = zod_1.z.object({
         })
     })
 });
-const loginUser = zod_1.z.object({
-    body: zod_1.z.object({
-        email: zod_1.z
-            .string({
-            required_error: 'Email is required!'
-        })
-            .email({
-            message: 'Invalid email address!'
-        }),
-        password: zod_1.z.string({
-            required_error: 'Password is required!'
-        })
-    })
-});
 const updateUserProfile = zod_1.z.object({
     body: zod_1.z.object({
         image: zod_1.z
@@ -111,7 +97,6 @@ const updateUserProfile = zod_1.z.object({
 });
 const userValidationSchemas = {
     createUser,
-    loginUser,
     updateUserProfile
 };
 exports.default = userValidationSchemas;

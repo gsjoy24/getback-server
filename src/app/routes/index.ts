@@ -1,4 +1,5 @@
 import express from 'express';
+import authRoutes from '../modules/Auth/auth.routes';
 import CategoryRoutes from '../modules/Category/category.routes';
 import ClaimRoutes from '../modules/ClaimItem/claim.routes';
 import FoundItemRoutes from '../modules/FoundItem/foundItem.routes';
@@ -9,27 +10,31 @@ const router = express.Router();
 
 const moduleRoutes = [
 	{
-		path: '/',
+		path: '/users',
 		route: userRoutes
 	},
 	{
-		path: '/',
+		path: '/auth',
+		route: authRoutes
+	},
+	{
+		path: '/categories',
 		route: CategoryRoutes
 	},
 	{
-		path: '/',
+		path: '/found-items',
 		route: FoundItemRoutes
 	},
 	{
-		path: '/',
+		path: '/claims',
 		route: ClaimRoutes
 	},
 	{
-		path: '/',
+		path: '/lost-items',
 		route: LostItemRoutes
 	},
 	{
-		path: '/',
+		path: '/newsletter',
 		route: NewsLetterSubscribeRouter
 	}
 ];

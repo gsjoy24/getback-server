@@ -7,23 +7,23 @@ import ReportItemValidations from './foundItem.validation';
 
 const router = express.Router();
 
-router.get('/found-items', FoundItemControllers.getFoundItems);
+router.get('/', FoundItemControllers.getFoundItems);
 
-router.get('/found-items/:id', FoundItemControllers.getFoundItemById);
+router.get('/:id', FoundItemControllers.getFoundItemById);
 
-router.get('/my-found-items', auth(userRoles.ADMIN, userRoles.USER), FoundItemControllers.getMyFoundItems);
+router.get('/me', auth(userRoles.ADMIN, userRoles.USER), FoundItemControllers.getMyFoundItems);
 
 router.post(
-	'/found-items',
+	'/',
 	auth(userRoles.ADMIN, userRoles.USER),
 	validateRequest(ReportItemValidations.ReportFoundItem),
 	FoundItemControllers.ReportFoundItem
 );
 
-router.delete('/found-items/:id', auth(userRoles.ADMIN, userRoles.USER), FoundItemControllers.deleteFoundItem);
+router.delete('/:id', auth(userRoles.ADMIN, userRoles.USER), FoundItemControllers.deleteFoundItem);
 
 router.put(
-	'/found-items/:id',
+	'/:id',
 	auth(userRoles.ADMIN, userRoles.USER),
 	validateRequest(ReportItemValidations.UpdateFoundItem),
 	FoundItemControllers.updateFoundItem

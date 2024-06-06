@@ -19,3 +19,8 @@ export type QueryOptions = {
 	sortBy?: string;
 	sortOrder?: string;
 };
+
+export type TPasswords = {
+	oldPassword: string;
+	newPassword: string;
+};

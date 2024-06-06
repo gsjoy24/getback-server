@@ -25,7 +25,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = __importDefault(require("../../config"));
-const createToken_1 = __importDefault(require("../../utils/createToken"));
 const prisma_1 = __importDefault(require("../../utils/prisma"));
 const user_constant_1 = require("./user.constant");
 const createUser = (userData) => __awaiter(void 0, void 0, void 0, function* () {
@@ -97,6 +96,18 @@ const getAllUsers = (query, options) => __awaiter(void 0, void 0, void 0, functi
         take: limit,
         orderBy: {
             [sortBy]: sortOrder
+        },
+        select: {
+            id: true,
+            name: true,
+            username: true,
+            email: true,
+            phone: true,
+            role: true,
+            status: true,
+            createdAt: true,
+            updatedAt: true,
+            userProfile: true
         }
     });
     const total = yield prisma_1.default.user.count({
@@ -110,29 +121,6 @@ const getAllUsers = (query, options) => __awaiter(void 0, void 0, void 0, functi
         },
         users
     };
-});
-const loginUser = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield prisma_1.default.user.findUniqueOrThrow({
-        where: {
-            email
-        }
-    });
-    if (user.status === 'BLOCKED') {
-        throw new Error('Your account is suspended!');
-    }
-    const isPasswordMatch = yield bcrypt_1.default.compare(password, user.password);
-    if (!isPasswordMatch) {
-        throw new Error('Invalid password');
-    }
-    const userData = {
-        id: user.id,
-        email: user.email,
-        phone: user.phone,
-        username: user.username,
-        role: user.role
-    };
-    const token = (0, createToken_1.default)(userData, config_1.default.accessSecret, config_1.default.accessSecretExp);
-    return Object.assign(Object.assign({ name: user.name }, userData), { token });
 });
 const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const lostItems = yield prisma_1.default.lostItem.findMany({
@@ -224,45 +212,10 @@ const updateUserProfile = (userId, profileData) => __awaiter(void 0, void 0, voi
     });
     return userProfile;
 });
-const toggleUserRole = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield prisma_1.default.user.findUniqueOrThrow({
-        where: {
-            id: userId
-        }
-    });
-    const result = yield prisma_1.default.user.update({
-        where: {
-            id: userId
-        },
-        data: {
-            role: user.role === 'USER' ? 'ADMIN' : 'USER'
-        }
-    });
-    return result;
-});
-const toggleUserStatus = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield prisma_1.default.user.findUniqueOrThrow({
-        where: {
-            id: userId
-        }
-    });
-    const result = yield prisma_1.default.user.update({
-        where: {
-            id: userId
-        },
-        data: {
-            status: user.status === 'ACTIVE' ? 'BLOCKED' : 'ACTIVE'
-        }
-    });
-    return result;
-});
 const UserServices = {
     createUser,
-    loginUser,
     getUserProfile,
     updateUserProfile,
-    toggleUserRole,
-    toggleUserStatus,
     getAllUsers
 };
 exports.default = UserServices;
