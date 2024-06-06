@@ -7,18 +7,18 @@ import ReportItemValidations from './foundItem.validation';
 
 const router = express.Router();
 
-router.get('/', FoundItemControllers.getFoundItems);
-
-router.get('/:id', FoundItemControllers.getFoundItemById);
-
-router.get('/me', auth(userRoles.ADMIN, userRoles.USER), FoundItemControllers.getMyFoundItems);
-
 router.post(
 	'/',
 	auth(userRoles.ADMIN, userRoles.USER),
 	validateRequest(ReportItemValidations.ReportFoundItem),
 	FoundItemControllers.ReportFoundItem
 );
+
+router.get('/', FoundItemControllers.getFoundItems);
+
+router.get('/me', auth(userRoles.ADMIN, userRoles.USER), FoundItemControllers.getMyFoundItems);
+
+router.get('/:id', FoundItemControllers.getFoundItemById);
 
 router.delete('/:id', auth(userRoles.ADMIN, userRoles.USER), FoundItemControllers.deleteFoundItem);
 

@@ -15,9 +15,9 @@ router.post(
 
 router.get('/', auth(userRoles.ADMIN, userRoles.USER), ClaimControllers.getClaims);
 
-router.get('/:claimId', auth(userRoles.ADMIN, userRoles.USER), ClaimControllers.getClaim);
-
 router.get('/me', auth(userRoles.ADMIN, userRoles.USER), ClaimControllers.getMyClaims);
+
+router.get('/:claimId', auth(userRoles.ADMIN, userRoles.USER), ClaimControllers.getClaim);
 
 router.put(
 	'/:claimId',

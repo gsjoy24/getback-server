@@ -16,9 +16,9 @@ router.post(
 
 router.get('/', LostItemControllers.getLostItems);
 
-router.get('/:lostItemId', LostItemControllers.getSingleLostItem);
-
 router.get('/me', auth(userRoles.ADMIN, userRoles.USER), LostItemControllers.getMyLostItems);
+
+router.get('/:lostItemId', LostItemControllers.getSingleLostItem);
 
 router.put(
 	'/:lostItemId',
