@@ -20,6 +20,13 @@ router.put(
 	AuthControllers.changeUserPassword
 );
 
+router.delete(
+	'/delete-account',
+	auth(userRoles.ADMIN, userRoles.USER),
+	validateRequest(AuthValidation.deleteAccount),
+	AuthControllers.deleteAccount
+);
+
 const authRoutes = router;
 
 export default authRoutes;

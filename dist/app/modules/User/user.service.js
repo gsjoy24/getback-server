@@ -148,6 +148,9 @@ const getUserProfile = (userId) => __awaiter(void 0, void 0, void 0, function* (
         take: 4,
         orderBy: {
             createdAt: 'desc'
+        },
+        include: {
+            foundItem: true
         }
     });
     // all counts

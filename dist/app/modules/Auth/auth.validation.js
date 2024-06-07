@@ -25,8 +25,16 @@ const changePassword = zod_1.z.object({
         })
     })
 });
+const deleteAccount = zod_1.z.object({
+    body: zod_1.z.object({
+        password: zod_1.z.string({
+            required_error: 'Password is required!'
+        })
+    })
+});
 const AuthValidation = {
     loginUser,
-    changePassword
+    changePassword,
+    deleteAccount
 };
 exports.default = AuthValidation;

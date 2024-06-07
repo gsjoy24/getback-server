@@ -97,11 +97,60 @@ const changeUserPassword = async (userId: string, payload: TPasswords) => {
 	return;
 };
 
+const deleteAccount = async (password: string, userId: string) => {
+	const user = await prisma.user.findUniqueOrThrow({
+		where: {
+			id: userId
+		}
+	});
+
+	const isPasswordMatch = await bcrypt.compare(password, user.password);
+	if (!isPasswordMatch) {
+		throw new Error('Password does not match!');
+	}
+
+	const result = await prisma.$transaction(async (tx) => {
+		await tx.lostItem.deleteMany({
+			where: {
+				userId
+			}
+		});
+
+		await tx.claim.deleteMany({
+			where: {
+				userId
+			}
+		});
+
+		await tx.foundItem.deleteMany({
+			where: {
+				userId
+			}
+		});
+
+		await tx.userProfile.delete({
+			where: {
+				userId
+			}
+		});
+
+		const res = await tx.user.delete({
+			where: {
+				id: userId
+			}
+		});
+
+		return res;
+	});
+	return result;
+};
+
 const AuthServices = {
 	loginUser,
 	toggleUserRole,
 	toggleUserStatus,
-	changeUserPassword
+	changeUserPassword,
+	deleteAccount
 };
 
 export default AuthServices;

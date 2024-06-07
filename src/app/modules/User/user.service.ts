@@ -148,6 +148,9 @@ const getUserProfile = async (userId: string) => {
 		take: 4,
 		orderBy: {
 			createdAt: 'desc'
+		},
+		include: {
+			foundItem: true
 		}
 	});
 
@@ -157,11 +160,13 @@ const getUserProfile = async (userId: string) => {
 			userId
 		}
 	});
+
 	const claimedItemsCount = await prisma.claim.count({
 		where: {
 			userId
 		}
 	});
+
 	const lostItemsCount = await prisma.lostItem.count({
 		where: {
 			userId
@@ -186,6 +191,7 @@ const getUserProfile = async (userId: string) => {
 			}
 		}
 	});
+
 	return {
 		...userProfile,
 		lostItems,

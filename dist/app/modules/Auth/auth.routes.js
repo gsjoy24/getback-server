@@ -14,5 +14,6 @@ router.post('/login', (0, validateRequest_1.default)(auth_validation_1.default.l
 router.put('/toggle-user-role/:id', (0, auth_1.default)(userRoles_1.default.ADMIN), auth_controller_1.default.toggleUserRole);
 router.put('/toggle-user-status/:id', (0, auth_1.default)(userRoles_1.default.ADMIN), auth_controller_1.default.toggleUserStatus);
 router.put('/change-password', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), (0, validateRequest_1.default)(auth_validation_1.default.changePassword), auth_controller_1.default.changeUserPassword);
+router.delete('/delete-account', (0, auth_1.default)(userRoles_1.default.ADMIN, userRoles_1.default.USER), (0, validateRequest_1.default)(auth_validation_1.default.deleteAccount), auth_controller_1.default.deleteAccount);
 const authRoutes = router;
 exports.default = authRoutes;

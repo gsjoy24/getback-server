@@ -71,10 +71,21 @@ const changeUserPassword = (0, catchAsync_1.default)((req, res) => __awaiter(voi
         message: 'User password updated successfully!'
     });
 }));
+const deleteAccount = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _c;
+    const { password } = req === null || req === void 0 ? void 0 : req.body;
+    const result = yield auth_services_1.default.deleteAccount(password, (_c = req.user) === null || _c === void 0 ? void 0 : _c.id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.NO_CONTENT,
+        success: true,
+        message: 'User account deleted successfully!'
+    });
+}));
 const AuthControllers = {
     loginUser,
     toggleUserRole,
     toggleUserStatus,
-    changeUserPassword
+    changeUserPassword,
+    deleteAccount
 };
 exports.default = AuthControllers;

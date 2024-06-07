@@ -94,10 +94,51 @@ const changeUserPassword = (userId, payload) => __awaiter(void 0, void 0, void 0
     });
     return;
 });
+const deleteAccount = (password, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: userId
+        }
+    });
+    const isPasswordMatch = yield bcrypt_1.default.compare(password, user.password);
+    if (!isPasswordMatch) {
+        throw new Error('Password does not match!');
+    }
+    const result = yield prisma_1.default.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
+        yield tx.lostItem.deleteMany({
+            where: {
+                userId
+            }
+        });
+        yield tx.claim.deleteMany({
+            where: {
+                userId
+            }
+        });
+        yield tx.foundItem.deleteMany({
+            where: {
+                userId
+            }
+        });
+        yield tx.userProfile.delete({
+            where: {
+                userId
+            }
+        });
+        const res = yield tx.user.delete({
+            where: {
+                id: userId
+            }
+        });
+        return res;
+    }));
+    return result;
+});
 const AuthServices = {
     loginUser,
     toggleUserRole,
     toggleUserStatus,
-    changeUserPassword
+    changeUserPassword,
+    deleteAccount
 };
 exports.default = AuthServices;

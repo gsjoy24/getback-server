@@ -53,11 +53,22 @@ const changeUserPassword = catchAsync(async (req: Request, res: Response) => {
 	});
 });
 
+const deleteAccount = catchAsync(async (req: Request, res: Response) => {
+	const { password } = req?.body;
+	const result = await AuthServices.deleteAccount(password, req.user?.id as string);
+	sendResponse(res, {
+		statusCode: httpStatus.NO_CONTENT,
+		success: true,
+		message: 'User account deleted successfully!'
+	});
+});
+
 const AuthControllers = {
 	loginUser,
 	toggleUserRole,
 	toggleUserStatus,
-	changeUserPassword
+	changeUserPassword,
+	deleteAccount
 };
 
 export default AuthControllers;
