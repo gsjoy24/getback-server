@@ -217,9 +217,14 @@ const updateFoundItem = (id, data, user) => __awaiter(void 0, void 0, void 0, fu
     if (foundItem.userId !== user.id && user.role !== 'ADMIN') {
         throw new Error('You are not authorized to update this item');
     }
+    const { categoryId } = data, restData = __rest(data, ["categoryId"]);
+    const modifiedData = Object.assign({}, restData);
+    if (categoryId) {
+        modifiedData.category = { connect: { id: categoryId } };
+    }
     const updatedItem = yield prisma_1.default.foundItem.update({
         where: { id },
-        data
+        data: modifiedData
     });
     return updatedItem;
 });

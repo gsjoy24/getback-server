@@ -115,6 +115,20 @@ const deleteAccount = (password, userId) => __awaiter(void 0, void 0, void 0, fu
                 userId
             }
         });
+        // deleting all found items and claims on the items.
+        const items = yield tx.foundItem.findMany({
+            where: {
+                userId
+            }
+        });
+        const itemIds = items.map((item) => item.id);
+        yield tx.claim.deleteMany({
+            where: {
+                foundItemId: {
+                    in: itemIds
+                }
+            }
+        });
         yield tx.foundItem.deleteMany({
             where: {
                 userId

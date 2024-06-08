@@ -122,6 +122,23 @@ const deleteAccount = async (password: string, userId: string) => {
 			}
 		});
 
+		// deleting all found items and claims on the items.
+		const items = await tx.foundItem.findMany({
+			where: {
+				userId
+			}
+		});
+
+		const itemIds = items.map((item) => item.id);
+
+		await tx.claim.deleteMany({
+			where: {
+				foundItemId: {
+					in: itemIds
+				}
+			}
+		});
+
 		await tx.foundItem.deleteMany({
 			where: {
 				userId
