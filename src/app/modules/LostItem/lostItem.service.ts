@@ -231,12 +231,22 @@ const updateLostItem = async (id: string, data: any, user: User) => {
 		throw new Error('You are not authorized to update this item!');
 	}
 
+	const { categoryId, ...restData } = data;
+
+	const modifiedData = {
+		...restData
+	};
+
+	if (categoryId) {
+		modifiedData.category = { connect: { id: categoryId } };
+	}
+
 	const updatedItem = await prisma.lostItem.update({
 		where: {
 			id
 		},
 		data: {
-			...data
+			...modifiedData
 		}
 	});
 
