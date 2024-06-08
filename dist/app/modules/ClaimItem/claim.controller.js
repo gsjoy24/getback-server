@@ -52,7 +52,8 @@ const getClaim = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 
 const getMyClaims = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-    const { meta, claims } = yield claim_service_1.default.getMyClaims((_a = req.user) === null || _a === void 0 ? void 0 : _a.id, options);
+    const query = (0, pick_1.default)(req.query, claim_constant_1.claimFilterAbleFields);
+    const { meta, claims } = yield claim_service_1.default.getMyClaims((_a = req.user) === null || _a === void 0 ? void 0 : _a.id, options, query);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

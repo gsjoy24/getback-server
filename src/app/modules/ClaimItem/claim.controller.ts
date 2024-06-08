@@ -46,7 +46,8 @@ const getClaim = catchAsync(async (req: Request, res: Response) => {
 
 const getMyClaims = catchAsync(async (req: Request, res: Response) => {
 	const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-	const { meta, claims } = await claimServices.getMyClaims(req.user?.id as string, options);
+	const query = pick(req.query, claimFilterAbleFields);
+	const { meta, claims } = await claimServices.getMyClaims(req.user?.id as string, options, query);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,

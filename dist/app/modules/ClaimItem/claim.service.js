@@ -83,6 +83,7 @@ const getClaims = (query, options) => __awaiter(void 0, void 0, void 0, function
             [sortBy]: sortOrder
         },
         include: {
+            foundItem: true,
             user: {
                 select: {
                     id: true,
@@ -90,8 +91,7 @@ const getClaims = (query, options) => __awaiter(void 0, void 0, void 0, function
                     email: true,
                     phone: true
                 }
-            },
-            foundItem: true
+            }
         }
     });
     const total = yield prisma_1.default.claim.count({
@@ -124,29 +124,56 @@ const getClaim = (claimId) => __awaiter(void 0, void 0, void 0, function* () {
         }
     });
 });
-const getMyClaims = (userId, options) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyClaims = (userId, options, query) => __awaiter(void 0, void 0, void 0, function* () {
+    const { searchTerm } = query, restQueryData = __rest(query, ["searchTerm"]);
+    console.log('query', query);
     const page = Number(options.page) || 1;
     const limit = Number(options.limit) || 10;
     const skip = (Number(page) - 1) * limit;
     const sortBy = options.sortBy || 'createdAt';
     const sortOrder = options.sortOrder || 'desc';
-    const claims = yield prisma_1.default.claim.findMany({
-        where: {
+    const conditions = [
+        {
             userId
-        },
+        }
+    ];
+    if (searchTerm) {
+        conditions.push({
+            OR: claim_constant_1.claimSearchableFields.map((field) => ({
+                [field]: { contains: searchTerm, mode: 'insensitive' }
+            }))
+        });
+    }
+    if (Object.keys(restQueryData).length) {
+        conditions.push({
+            AND: Object.keys(restQueryData).map((key) => ({
+                [key]: {
+                    equals: restQueryData[key]
+                }
+            }))
+        });
+    }
+    const claims = yield prisma_1.default.claim.findMany({
+        where: { AND: conditions },
         skip,
         take: limit,
         orderBy: {
             [sortBy]: sortOrder
         },
         include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    phone: true
+                }
+            },
             foundItem: true
         }
     });
     const total = yield prisma_1.default.claim.count({
-        where: {
-            userId
-        }
+        where: { AND: conditions }
     });
     return {
         meta: {

@@ -80,6 +80,7 @@ const getClaims = async (query: any, options: QueryOptions) => {
 			[sortBy]: sortOrder
 		},
 		include: {
+			foundItem: true,
 			user: {
 				select: {
 					id: true,
@@ -87,8 +88,7 @@ const getClaims = async (query: any, options: QueryOptions) => {
 					email: true,
 					phone: true
 				}
-			},
-			foundItem: true
+			}
 		}
 	});
 
@@ -125,7 +125,10 @@ const getClaim = async (claimId: string) => {
 	});
 };
 
-const getMyClaims = async (userId: string, options: QueryOptions) => {
+const getMyClaims = async (userId: string, options: QueryOptions, query: any) => {
+	const { searchTerm, ...restQueryData } = query;
+
+	console.log('query', query);
 	const page: number = Number(options.page) || 1;
 	const limit: number = Number(options.limit) || 10;
 	const skip: number = (Number(page) - 1) * limit;
@@ -133,24 +136,52 @@ const getMyClaims = async (userId: string, options: QueryOptions) => {
 	const sortBy: string = options.sortBy || 'createdAt';
 	const sortOrder: string = options.sortOrder || 'desc';
 
-	const claims = await prisma.claim.findMany({
-		where: {
+	const conditions: Prisma.ClaimWhereInput[] = [
+		{
 			userId
-		},
+		}
+	];
+
+	if (searchTerm) {
+		conditions.push({
+			OR: claimSearchableFields.map((field) => ({
+				[field]: { contains: searchTerm, mode: 'insensitive' }
+			}))
+		});
+	}
+
+	if (Object.keys(restQueryData).length) {
+		conditions.push({
+			AND: Object.keys(restQueryData).map((key) => ({
+				[key]: {
+					equals: (restQueryData as any)[key]
+				}
+			}))
+		});
+	}
+
+	const claims = await prisma.claim.findMany({
+		where: { AND: conditions },
 		skip,
 		take: limit,
 		orderBy: {
 			[sortBy]: sortOrder
 		},
 		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					phone: true
+				}
+			},
 			foundItem: true
 		}
 	});
 
 	const total = await prisma.claim.count({
-		where: {
-			userId
-		}
+		where: { AND: conditions }
 	});
 
 	return {
