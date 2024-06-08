@@ -72,11 +72,12 @@ const changeUserPassword = (0, catchAsync_1.default)((req, res) => __awaiter(voi
     });
 }));
 const deleteAccount = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
+    var _c, _d;
     const { password } = req === null || req === void 0 ? void 0 : req.body;
-    const result = yield auth_services_1.default.deleteAccount(password, (_c = req.user) === null || _c === void 0 ? void 0 : _c.id);
+    console.log({ password, userId: (_c = req.user) === null || _c === void 0 ? void 0 : _c.id });
+    yield auth_services_1.default.deleteAccount(password, (_d = req.user) === null || _d === void 0 ? void 0 : _d.id);
     (0, sendResponse_1.default)(res, {
-        statusCode: http_status_1.default.NO_CONTENT,
+        statusCode: http_status_1.default.OK,
         success: true,
         message: 'User account deleted successfully!'
     });
