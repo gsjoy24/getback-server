@@ -55,9 +55,11 @@ const changeUserPassword = catchAsync(async (req: Request, res: Response) => {
 
 const deleteAccount = catchAsync(async (req: Request, res: Response) => {
 	const { password } = req?.body;
-	const result = await AuthServices.deleteAccount(password, req.user?.id as string);
+	console.log({ password, userId: req.user?.id });
+	await AuthServices.deleteAccount(password, req.user?.id as string);
+
 	sendResponse(res, {
-		statusCode: httpStatus.NO_CONTENT,
+		statusCode: httpStatus.OK,
 		success: true,
 		message: 'User account deleted successfully!'
 	});
