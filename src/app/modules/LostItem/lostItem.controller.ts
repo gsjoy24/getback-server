@@ -33,8 +33,9 @@ const getLostItems = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getMyLostItems = catchAsync(async (req: Request, res: Response) => {
+	const query = pick(req.query, lostItemFilterAbleFields);
 	const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-	const { meta, lostItems } = await LostItemServices.getMyLostItems(req.user as User, options);
+	const { meta, lostItems } = await LostItemServices.getMyLostItems(req.user as User, options, query);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,

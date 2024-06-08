@@ -50,9 +50,9 @@ const getFoundItemById = (0, catchAsync_1.default)((req, res) => __awaiter(void 
     });
 }));
 const getMyFoundItems = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ user: req.user });
+    const query = (0, pick_1.default)(req.query, foundItem_constant_1.foundItemFilterAbleFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-    const { meta, foundItems } = yield foundItem_service_1.default.getMyFoundItems(req.user, options);
+    const { meta, foundItems } = yield foundItem_service_1.default.getMyFoundItems(req.user, query, options);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

@@ -40,8 +40,9 @@ const getLostItems = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getMyLostItems = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = (0, pick_1.default)(req.query, lostItem_constant_1.lostItemFilterAbleFields);
     const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-    const { meta, lostItems } = yield lostItem_service_1.default.getMyLostItems(req.user, options);
+    const { meta, lostItems } = yield lostItem_service_1.default.getMyLostItems(req.user, options, query);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

@@ -101,7 +101,9 @@ const getLostItems = async (query: any, options: QueryOptions) => {
 	};
 };
 
-const getMyLostItems = async (user: User, options: QueryOptions) => {
+const getMyLostItems = async (user: User, query: any, options: QueryOptions) => {
+	const { searchTerm, ...restQueryData } = query;
+
 	const page: number = Number(options.page) || 1;
 	const limit: number = Number(options.limit) || 10;
 	const skip: number = (Number(page) - 1) * limit;
@@ -109,24 +111,52 @@ const getMyLostItems = async (user: User, options: QueryOptions) => {
 	const sortBy: string = options.sortBy || 'createdAt';
 	const sortOrder: string = options.sortOrder || 'desc';
 
-	const lostItems = await prisma.lostItem.findMany({
-		where: {
+	const conditions: Prisma.LostItemWhereInput[] = [
+		{
 			userId: user.id
-		},
+		}
+	];
+
+	if (searchTerm) {
+		conditions.push({
+			OR: lostItemSearchableFields.map((field) => ({
+				[field]: { contains: searchTerm, mode: 'insensitive' }
+			}))
+		});
+	}
+
+	if (Object.keys(restQueryData).length) {
+		conditions.push({
+			AND: Object.keys(restQueryData).map((key) => ({
+				[key]: {
+					equals: (restQueryData as any)[key]
+				}
+			}))
+		});
+	}
+
+	const lostItems = await prisma.lostItem.findMany({
+		where: { AND: conditions },
 		skip,
 		take: limit,
 		orderBy: {
 			[sortBy]: sortOrder
 		},
 		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					phone: true
+				}
+			},
 			category: true
 		}
 	});
 
 	const total = await prisma.lostItem.count({
-		where: {
-			userId: user.id
-		}
+		where: { AND: conditions }
 	});
 
 	return {

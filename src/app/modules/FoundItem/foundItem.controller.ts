@@ -45,9 +45,9 @@ const getFoundItemById = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getMyFoundItems = catchAsync(async (req: Request, res: Response) => {
-	console.log({ user: req.user });
+	const query = pick(req.query, foundItemFilterAbleFields);
 	const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
-	const { meta, foundItems } = await FoundItemServices.getMyFoundItems(req.user as User, options);
+	const { meta, foundItems } = await FoundItemServices.getMyFoundItems(req.user as User, query, options);
 
 	sendResponse(res, {
 		statusCode: httpStatus.OK,

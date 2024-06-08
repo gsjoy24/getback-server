@@ -102,7 +102,9 @@ const getFoundItems = async (query: any, options: QueryOptions) => {
 	};
 };
 
-const getMyFoundItems = async (user: User, options: QueryOptions) => {
+const getMyFoundItems = async (user: User, query: any, options: QueryOptions) => {
+	const { searchTerm, ...restQueryData } = query;
+
 	const page: number = Number(options.page) || 1;
 	const limit: number = Number(options.limit) || 10;
 	const skip: number = (Number(page) - 1) * limit;
@@ -110,25 +112,53 @@ const getMyFoundItems = async (user: User, options: QueryOptions) => {
 	const sortBy: string = options.sortBy || 'createdAt';
 	const sortOrder: string = options.sortOrder || 'desc';
 
-	const foundItems = await prisma.foundItem.findMany({
-		where: {
+	const conditions: Prisma.FoundItemWhereInput[] = [
+		{
 			userId: user.id
-		},
+		}
+	];
+
+	if (searchTerm) {
+		conditions.push({
+			OR: foundItemSearchableFields.map((field) => ({
+				[field]: { contains: searchTerm, mode: 'insensitive' }
+			}))
+		});
+	}
+
+	if (Object.keys(restQueryData).length) {
+		conditions.push({
+			AND: Object.keys(restQueryData).map((key) => ({
+				[key]: {
+					equals: (restQueryData as any)[key]
+				}
+			}))
+		});
+	}
+
+	const foundItems = await prisma.foundItem.findMany({
+		where: { AND: conditions },
 		skip,
 		take: limit,
 		orderBy: {
 			[sortBy]: sortOrder
 		},
 		include: {
-			category: true,
-			claim: true
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					createdAt: true,
+					updatedAt: true
+				}
+			},
+			category: true
 		}
 	});
 
 	const total = await prisma.foundItem.count({
-		where: {
-			userId: user.id
-		}
+		where: { AND: conditions }
 	});
 
 	return {

@@ -109,30 +109,56 @@ const getFoundItems = (query, options) => __awaiter(void 0, void 0, void 0, func
         foundItems
     };
 });
-const getMyFoundItems = (user, options) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyFoundItems = (user, query, options) => __awaiter(void 0, void 0, void 0, function* () {
+    const { searchTerm } = query, restQueryData = __rest(query, ["searchTerm"]);
     const page = Number(options.page) || 1;
     const limit = Number(options.limit) || 10;
     const skip = (Number(page) - 1) * limit;
     const sortBy = options.sortBy || 'createdAt';
     const sortOrder = options.sortOrder || 'desc';
-    const foundItems = yield prisma_1.default.foundItem.findMany({
-        where: {
+    const conditions = [
+        {
             userId: user.id
-        },
+        }
+    ];
+    if (searchTerm) {
+        conditions.push({
+            OR: foundItem_constant_1.foundItemSearchableFields.map((field) => ({
+                [field]: { contains: searchTerm, mode: 'insensitive' }
+            }))
+        });
+    }
+    if (Object.keys(restQueryData).length) {
+        conditions.push({
+            AND: Object.keys(restQueryData).map((key) => ({
+                [key]: {
+                    equals: restQueryData[key]
+                }
+            }))
+        });
+    }
+    const foundItems = yield prisma_1.default.foundItem.findMany({
+        where: { AND: conditions },
         skip,
         take: limit,
         orderBy: {
             [sortBy]: sortOrder
         },
         include: {
-            category: true,
-            claim: true
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    createdAt: true,
+                    updatedAt: true
+                }
+            },
+            category: true
         }
     });
     const total = yield prisma_1.default.foundItem.count({
-        where: {
-            userId: user.id
-        }
+        where: { AND: conditions }
     });
     return {
         meta: {
